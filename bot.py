@@ -76,7 +76,7 @@ class Music(commands.Cog):
                 bot.currentList = "memeful/"
 
                 bot.currentSong = bot.musicList[0]
-                bot.currentVC.play(discord.FFmpegPCMAudio(executable="./ffmpeg.exe", source=randomSong), after=my_after)
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
         else:
             await playingMessage(ctx)
 
@@ -113,12 +113,12 @@ class Music(commands.Cog):
                             randomSong = './media/mp3/playlist/memeful/' + bot.musicList[bot.playlist_counter]
                             bot.currentSong = bot.musicList[bot.playlist_counter]
                             bot.playlist_counter = bot.playlist_counter + 1
-                            bot.currentVC.play(discord.FFmpegPCMAudio(executable="./ffmpeg.exe", source=randomSong), after=my_after)
+                            bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
                     
                 bot.currentList = "memeful/"
                 
                 bot.currentSong = bot.musicList[0]
-                bot.currentVC.play(discord.FFmpegPCMAudio(executable="./ffmpeg.exe", source=randomSong), after=my_after)
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
         else:
             await playingMessage(ctx)
 
@@ -153,7 +153,7 @@ class Music(commands.Cog):
                 bot.currentList = "memeless/"
 
                 bot.currentSong = bot.musicList[0]
-                bot.currentVC.play(discord.FFmpegPCMAudio(executable="./ffmpeg.exe", source=randomSong), after=my_after)
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
         else:
             await playingMessage(ctx)
 
@@ -190,12 +190,12 @@ class Music(commands.Cog):
                             randomSong = './media/mp3/playlist/memeful/' + bot.musicList[bot.playlist_counter]
                             bot.currentSong = bot.musicList[bot.playlist_counter]
                             bot.playlist_counter = bot.playlist_counter + 1
-                            bot.currentVC.play(discord.FFmpegPCMAudio(executable="./ffmpeg.exe", source=randomSong), after=my_after)
+                            bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
                     
                 bot.currentList = "memeless/"
                 
                 bot.currentSong = bot.musicList[0]
-                bot.currentVC.play(discord.FFmpegPCMAudio(executable="./ffmpeg.exe", source=randomSong), after=my_after)
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
         else:
             await playingMessage(ctx)
 
@@ -207,7 +207,7 @@ class Music(commands.Cog):
                 if (bot.musicList[bot.playlist_counter] != None and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
                     randomSong = './media/mp3/playlist/' + bot.currentList + bot.musicList[bot.playlist_counter]
                     bot.playlist_counter = bot.playlist_counter + 1
-                    bot.currentVC.play(discord.FFmpegPCMAudio(executable="./ffmpeg.exe", source=randomSong), after=my_after)
+                    bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
 
         if (bot.currentVC.is_playing() and bot.currentVC.is_connected()):
             if (bot.playlist_counter >= len(bot.musicList)):
@@ -220,7 +220,7 @@ class Music(commands.Cog):
                 bot.playlist_counter = bot.playlist_counter + 1
 
                 bot.currentVC.stop()
-                bot.currentVC.play(discord.FFmpegPCMAudio(executable="./ffmpeg.exe", source=randomSong), after=my_after)
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
             
     """
     def getMusicList(self):
@@ -290,9 +290,9 @@ class EverydayClassics(commands.Cog):
         dayMeme = ""
 
         if (day == 0):
-            dayMeme = 'monday.mkv'
+            dayMeme = 'monday.mp4'
         elif(day == 1):
-            dayMeme = 'tuesday.mkv'
+            dayMeme = 'tuesday.mp4'
         elif(day == 2):
             dayMeme = 'wednesday.mp4'
         elif(day == 3):
@@ -300,7 +300,7 @@ class EverydayClassics(commands.Cog):
         elif(day == 4):
             dayMeme = 'friday.mp4'
         elif(day == 5):
-            dayMeme = 'saturday.mkv'
+            dayMeme = 'saturday.mp4'
         elif(day == 6):
             dayMeme = 'sunday.mp4'
 
@@ -340,7 +340,7 @@ class Misc(commands.Cog):
                         # an error happened sending the message
                         pass    
 
-                bot.currentVC.play(discord.FFmpegPCMAudio(executable="./ffmpeg.exe", source=randomSong), after=my_after)
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
         else:
             await playingMessage(ctx)
 
