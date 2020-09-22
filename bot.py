@@ -206,7 +206,7 @@ class Music(commands.Cog):
         def my_after(error):
                 if (bot.musicList[bot.playlist_counter] != None and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
                     randomSong = './media/mp3/playlist/' + bot.currentList + bot.musicList[bot.playlist_counter]
-                    bot.currentSong = bot.musicList[bot.playList_counter]
+                    bot.currentSong = bot.musicList[bot.playlist_counter]
                     bot.playlist_counter = bot.playlist_counter + 1
                     bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
 
