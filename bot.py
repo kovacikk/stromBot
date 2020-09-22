@@ -19,7 +19,7 @@ bot.last_song = ""
 #Says a message when a new member enters the discord
 @bot.event
 async def on_ready():
-    print(f'{bot.user.name} has connected to Discord!')
+    print(bot.user.name + ' has connected to Discord!')
 
 
 bot.playlist_counter = 0
