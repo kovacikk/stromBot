@@ -206,6 +206,7 @@ class Music(commands.Cog):
         def my_after(error):
                 if (bot.musicList[bot.playlist_counter] != None and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
                     randomSong = './media/mp3/playlist/' + bot.currentList + bot.musicList[bot.playlist_counter]
+                    bot.currentSong = bot.musicList[bot.playList_counter]
                     bot.playlist_counter = bot.playlist_counter + 1
                     bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
 
@@ -365,7 +366,7 @@ class Misc(commands.Cog):
 """
 async def time_check():
     await bot.wait_until_ready()
-    message_channel=bot.get_channel(387360051482066944)
+    message_channel=bot.get_channel(159415088824975360)
     while True:
         day = datetime.date.today().weekday()
         now = datetime.datetime.strftime(datetime.datetime.now(), '%H:%M')
