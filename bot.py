@@ -257,9 +257,15 @@ class EverydayClassics(commands.Cog):
     #Cancels Someone (Probably Drew)
     @commands.command(name='cancel', help='Use this to cancel someone!')
     async def cancelDrew(self, ctx):
-        randomUser = random.choice(ctx.message.guild.members)
-        response = str(randomUser.id) + " is cancelled"
-        print(bot.get_user(170301539020308481).display_name)
+        randomUserId = random.choice(ctx.message.guild.members).id
+
+        ran = random.choice(range(10))
+
+        if (ran < 2):
+            randomUserId = 159433180036726784
+
+        randomUser = bot.get_user(randomUserId).display_name
+        response = randomUser + " is cancelled"
         await ctx.send(response)
 
 
