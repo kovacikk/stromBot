@@ -30,9 +30,9 @@ bot.currentList = "memeful/"
 
 
 #Tuesday at 12:00 pm
-bot.reginaldTime = "12:0"
+bot.reginaldTime = "12:00"
 bot.reginaldDay = 1
-bot.reginaldBool = False
+bot.reginaldBool = True
 
 
 """
