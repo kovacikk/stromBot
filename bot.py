@@ -3,10 +3,12 @@ import os
 
 import discord
 from discord.ext import commands
+from discord.ext.commands import CommandNotFound
 from dotenv import load_dotenv
 import random
 import asyncio
 import datetime
+
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -16,11 +18,21 @@ client = discord.Client()
 
 bot.last_song = ""
 
+bot.adminId = 170301539020308481;
+bot.generalId = 159415088824975360;
+
 #Says a message when a new member enters the discord
 @bot.event
 async def on_ready():
     print(bot.user.name + ' has connected to Discord!')
 
+#Default if no command is found
+@bot.event
+async def on_command_error(ctx, error):
+	if (isinstance(error, CommandNotFound)):
+		await ctx.send("Command does not exist. That is really embarrassing " + ctx.author.display_name);
+		return
+	raise error
 
 bot.playlist_counter = 0
 bot.musicList = None
@@ -65,6 +77,7 @@ class Music(commands.Cog):
 
                 def my_after(error):
                     bot.currentSong = "None"
+                    bot.currentVC.source.cleanup()
                     coro = bot.currentVC.disconnect()
                     fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
                     try:
@@ -97,6 +110,9 @@ class Music(commands.Cog):
                 bot.musicList = os.listdir('./media/mp3/playlist/memeful/')
                 random.shuffle(bot.musicList)
 
+                #print(bot.playlist_counter)
+                #print(len(bot.musicList))
+
                 randomSong = './media/mp3/playlist/memeful/' + bot.musicList[0]
             
                 bot.playlist_counter = 1
@@ -104,10 +120,15 @@ class Music(commands.Cog):
 
 
                 def my_after(error):
-                    if (bot.musicList[bot.playlist_counter] != None and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
+                    if (bot.musicList != None and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
+                        #print(bot.playlist_counter)
+                        #print(len(bot.musicList))
+
                         if bot.playlist_counter >= len(bot.musicList):
-                            server = ctx.message.guild.voice_client
-                            server.disconnect()
+                            bot.currentVC.source.cleanup()
+                            coro = bot.currentVC.disconnect()
+                            fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
+
                             bot.currentSong = "None"
                         else:
                             randomSong = './media/mp3/playlist/memeful/' + bot.musicList[bot.playlist_counter]
@@ -142,6 +163,7 @@ class Music(commands.Cog):
 
                 def my_after(error):
                     bot.currentSong = "None"
+                    bot.currentVC.source.cleanup()
                     coro = bot.currentVC.disconnect()
                     fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
                     try:
@@ -175,16 +197,24 @@ class Music(commands.Cog):
                 random.shuffle(bot.musicList)
 
                 randomSong = './media/mp3/playlist/memeless/' + bot.musicList[0]
-            
+           
+                #print(bot.playlist_counter)
+                #print(len(bot.musicList))
+ 
                 bot.playlist_counter = 1
 
-
+		
 
                 def my_after(error):
-                    if (bot.musicList[bot.playlist_counter] != None and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
+                    if (bot.musicList != None and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
+                        
+                        #print(bot.playlist_counter)
+                        #print(len(bot.musicList))		
+
                         if bot.playlist_counter >= len(bot.musicList):
-                            server = ctx.message.guild.voice_client
-                            server.disconnect()
+                            bot.currentVC.source.cleanup()
+                            coro = bot.currentVC.disconnect()
+                            fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
                             bot.currentSong = "None"
                         else:
                             randomSong = './media/mp3/playlist/memeful/' + bot.musicList[bot.playlist_counter]
@@ -204,18 +234,27 @@ class Music(commands.Cog):
     @commands.command(name='skip', help='Skips currently played song')
     async def skip(self, ctx):
         def my_after(error):
-                if (bot.musicList[bot.playlist_counter] != None and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
+                if (bot.musicList != None and bot.playlist_counter >= len(bot.musicList) and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
+                    #print(bot.playlist_counter)
+                    #print(len(bot.musicList))
+
                     randomSong = './media/mp3/playlist/' + bot.currentList + bot.musicList[bot.playlist_counter]
                     bot.currentSong = bot.musicList[bot.playlist_counter]
                     bot.playlist_counter = bot.playlist_counter + 1
                     bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-
+	
         if (bot.currentVC.is_playing() and bot.currentVC.is_connected()):
-            if (bot.playlist_counter >= len(bot.musicList)):
+      
+            if (bot.musicList == None or bot.playlist_counter >= len(bot.musicList)):
+                bot.playlist_counter = 0
+                bot.musicList = None
                 server = ctx.message.guild.voice_client
                 await server.disconnect()
                 bot.currentSong = "None"
             else:
+                #print(bot.playlist_counter)
+                #print(len(bot.musicList))
+
                 randomSong = './media/mp3/playlist/' + bot.currentList + bot.musicList[bot.playlist_counter]
                 bot.currentSong = bot.musicList[bot.playlist_counter]
                 bot.playlist_counter = bot.playlist_counter + 1
@@ -241,10 +280,13 @@ class Music(commands.Cog):
     #Disconnects Bot from Voice Chat
     @commands.command(name='stop', help='Stops music or clips from being played in voice', pass_context=True)
     async def stop(self, ctx):
-        server = ctx.message.guild.voice_client
-        await server.disconnect()
-        bot.currentSong = "None"
 
+	#Make sure Bot is connected to a voice channel
+        if bot.currentVC != None and bot.currentVC.is_connected():
+                bot.currentVC.source.cleanup()
+                coro = bot.currentVC.disconnect()
+                fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
+                bot.currentSong = "None"
 
 """
 
@@ -333,6 +375,7 @@ class Misc(commands.Cog):
                 randomSong = './media/mp3/shane/' + random.choice(os.listdir('./media/mp3/shane/'))
 
                 def my_after(error):
+                    bot.currentVC.source.cleanup()
                     coro = bot.currentVC.disconnect()
                     fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
                     try:
@@ -366,7 +409,7 @@ class Misc(commands.Cog):
 """
 async def time_check():
     await bot.wait_until_ready()
-    message_channel=bot.get_channel(159415088824975360)
+    message_channel=bot.get_channel(bot.generalId)
     while True:
         day = datetime.date.today().weekday()
         now = datetime.datetime.strftime(datetime.datetime.now(), '%H:%M')
@@ -396,6 +439,37 @@ async def playingMessage(ctx):
             response = "A clip is currently playing already. Either use s!stop or wait for it to finish"
 
         await ctx.send(response)
+
+#Used for hidden commands
+@bot.event
+async def on_message(ctx):
+	if (ctx.author == bot.user):
+		return
+
+	user = ctx.author.id
+
+
+	#Check for s!maintOn
+	if (ctx.content == 's!maintOn'):
+		#Check if user is an admin	
+		if (user == bot.adminId):
+			message_channel=bot.get_channel(bot.generalId)
+			#await ctx.channel.send("maintOn");
+			await message_channel.send("StromBot is currently undergoing maintenance\nPlease refrain from using any commands until further notice")
+			
+		return	
+	
+	#Check for s!maintOff
+	if (ctx.content == 's!maintOff'):
+		#Check if user is an admin	
+		if (user == bot.adminId):
+			message_channel=bot.get_channel(bot.generalId)
+			#await ctx.channel.send("maintOff");
+			await message_channel.send("StromBot is no longer undergoing maintenance\nKeep on Stromming")
+		return
+
+	#Go to Other Commands
+	await bot.process_commands(ctx);
 
 
 
