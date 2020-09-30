@@ -8,6 +8,11 @@ from dotenv import load_dotenv
 import random
 import asyncio
 import datetime
+from datetime import timedelta
+import traceback
+#import time
+
+#time.sleep(5)
 
 
 load_dotenv()
@@ -17,6 +22,8 @@ bot = commands.Bot(command_prefix='s!')
 client = discord.Client()
 
 bot.last_song = ""
+
+bot.acridTime = datetime.datetime.now() - timedelta(minutes=5);
 
 bot.adminId = 170301539020308481;
 bot.generalId = 159415088824975360;
@@ -32,7 +39,9 @@ async def on_command_error(ctx, error):
 	if (isinstance(error, CommandNotFound)):
 		await ctx.send("Command does not exist. That is really embarrassing " + ctx.author.display_name);
 		return
-	raise error
+	#print("error time");
+	traceback.print_exc(file=open("log.txt", "w"))
+	print(error);
 
 bot.playlist_counter = 0
 bot.musicList = None
@@ -44,7 +53,7 @@ bot.currentList = "memeful/"
 #Tuesday at 12:00 pm
 bot.reginaldTime = "12:00"
 bot.reginaldDay = 1
-bot.reginaldBool = True
+bot.reginaldBool = False
 
 
 """
@@ -89,7 +98,11 @@ class Music(commands.Cog):
                 bot.currentList = "memeful/"
 
                 bot.currentSong = bot.musicList[0]
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                
+                try:
+                        bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                except:
+                        return
         else:
             await playingMessage(ctx)
 
@@ -134,12 +147,18 @@ class Music(commands.Cog):
                             randomSong = './media/mp3/playlist/memeful/' + bot.musicList[bot.playlist_counter]
                             bot.currentSong = bot.musicList[bot.playlist_counter]
                             bot.playlist_counter = bot.playlist_counter + 1
-                            bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                    
+                            try:
+                                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                            except:
+                                return
+            
                 bot.currentList = "memeful/"
                 
                 bot.currentSong = bot.musicList[0]
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                try:
+                    bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                except:
+                    return
         else:
             await playingMessage(ctx)
 
@@ -175,7 +194,10 @@ class Music(commands.Cog):
                 bot.currentList = "memeless/"
 
                 bot.currentSong = bot.musicList[0]
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                try:
+                    bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                except:
+                    return
         else:
             await playingMessage(ctx)
 
@@ -220,12 +242,18 @@ class Music(commands.Cog):
                             randomSong = './media/mp3/playlist/memeful/' + bot.musicList[bot.playlist_counter]
                             bot.currentSong = bot.musicList[bot.playlist_counter]
                             bot.playlist_counter = bot.playlist_counter + 1
-                            bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                    
+                            try:
+                                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                            except:
+                                return
+
                 bot.currentList = "memeless/"
                 
                 bot.currentSong = bot.musicList[0]
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                try:
+                    bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                except:
+                    return
         else:
             await playingMessage(ctx)
 
@@ -234,14 +262,17 @@ class Music(commands.Cog):
     @commands.command(name='skip', help='Skips currently played song')
     async def skip(self, ctx):
         def my_after(error):
-                if (bot.musicList != None and bot.playlist_counter >= len(bot.musicList) and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
+                if (bot.musicList != None and bot.playlist_counter <= len(bot.musicList) and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
                     #print(bot.playlist_counter)
                     #print(len(bot.musicList))
 
                     randomSong = './media/mp3/playlist/' + bot.currentList + bot.musicList[bot.playlist_counter]
                     bot.currentSong = bot.musicList[bot.playlist_counter]
                     bot.playlist_counter = bot.playlist_counter + 1
-                    bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                    try:
+                        bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                    except:
+                        return
 	
         if (bot.currentVC.is_playing() and bot.currentVC.is_connected()):
       
@@ -260,8 +291,10 @@ class Music(commands.Cog):
                 bot.playlist_counter = bot.playlist_counter + 1
 
                 bot.currentVC.stop()
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-            
+                try:
+                        bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                except Exception:
+                        return 
     """
     def getMusicList(self):
         musicList = os.listdir('./media/mp3/playlist/')
@@ -385,6 +418,7 @@ class Misc(commands.Cog):
                         pass    
 
                 bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                
         else:
             await playingMessage(ctx)
 
@@ -401,6 +435,38 @@ class Misc(commands.Cog):
         bulborb = './media/bulborb/' + random.choice(os.listdir('./media/bulborb/'))
         await ctx.send(file=discord.File(bulborb))
 
+    #Plays the Bruh Sound
+    @commands.command(name='bruh', help='Bruh')
+    async def bruh(self, ctx):
+        bruh = './media/mp3/bruh/bruh.mp3'
+        if (bot.currentVC == None or not bot.currentVC.is_playing()):
+            user = ctx.message.author
+            userVC = user.voice.channel
+
+            if userVC != None:
+                channelName = userVC.name
+                voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
+                bot.currentVC = await voiceChannel.connect()
+       
+                def my_after(error):
+                    bot.currentVC.source.cleanup()
+                    coro = bot.currentVC.disconnect()
+                    fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
+                    try:
+                        fut.result()
+                    except:
+                        # an error happened sending the message
+                        pass    
+
+
+ 
+                try:
+                    bot.currentVC.play(discord.FFmpegPCMAudio(source=bruh), after=my_after)
+                except:
+                    return
+
+        else:
+            await playingMessage(ctx)
 
 """
 
@@ -468,10 +534,27 @@ async def on_message(ctx):
 			await message_channel.send("StromBot is no longer undergoing maintenance\nKeep on Stromming")
 		return
 
+
+	#Check for acrid.gif
+	url = ctx.content
+	url = url.split('/')[-1]
+	
+	if (url == 'acrid.gif' and getAcridTime()):
+		acrid = './media/jpg/acrid.gif'
+
+		#Set the time last acrid was posted
+		bot.acridTime = datetime.datetime.now()
+		await ctx.channel.send(file=discord.File(acrid));
+
 	#Go to Other Commands
 	await bot.process_commands(ctx);
 
-
+def getAcridTime():
+	now = datetime.datetime.now()
+	if (bot.acridTime + timedelta(minutes=5) < now):
+		return True
+	else:
+		return False 
 
 bot.add_cog(Music(bot))
 bot.add_cog(EverydayClassics(bot))
