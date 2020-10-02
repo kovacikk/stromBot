@@ -40,8 +40,10 @@ async def on_command_error(ctx, error):
 		await ctx.send("Command does not exist. That is really embarrassing " + ctx.author.display_name);
 		return
 	#print("error time");
-	traceback.print_exc(file=open("log.txt", "w"))
+	file=open("log.txt", "a")
 	print(error);
+	file.write(error)
+	file.close()
 
 bot.playlist_counter = 0
 bot.musicList = None
@@ -99,10 +101,10 @@ class Music(commands.Cog):
 
                 bot.currentSong = bot.musicList[0]
                 
-                try:
-                        bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                except:
-                        return
+                #try:
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                #except:
+                        #return
         else:
             await playingMessage(ctx)
 
@@ -147,18 +149,18 @@ class Music(commands.Cog):
                             randomSong = './media/mp3/playlist/memeful/' + bot.musicList[bot.playlist_counter]
                             bot.currentSong = bot.musicList[bot.playlist_counter]
                             bot.playlist_counter = bot.playlist_counter + 1
-                            try:
-                                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                            except:
-                                return
+                            #try:
+                            bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                            #except:
+                                #return
             
                 bot.currentList = "memeful/"
                 
                 bot.currentSong = bot.musicList[0]
-                try:
-                    bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                except:
-                    return
+                #try:
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                #except:
+                    #return
         else:
             await playingMessage(ctx)
 
@@ -194,10 +196,10 @@ class Music(commands.Cog):
                 bot.currentList = "memeless/"
 
                 bot.currentSong = bot.musicList[0]
-                try:
-                    bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                except:
-                    return
+                #try:
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                #except:
+                    #return
         else:
             await playingMessage(ctx)
 
@@ -242,18 +244,18 @@ class Music(commands.Cog):
                             randomSong = './media/mp3/playlist/memeful/' + bot.musicList[bot.playlist_counter]
                             bot.currentSong = bot.musicList[bot.playlist_counter]
                             bot.playlist_counter = bot.playlist_counter + 1
-                            try:
-                                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                            except:
-                                return
+                            #try:
+                            bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                            #except:
+                                #return
 
                 bot.currentList = "memeless/"
                 
                 bot.currentSong = bot.musicList[0]
-                try:
-                    bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                except:
-                    return
+                #try:
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                #except:
+                    #return
         else:
             await playingMessage(ctx)
 
@@ -269,10 +271,10 @@ class Music(commands.Cog):
                     randomSong = './media/mp3/playlist/' + bot.currentList + bot.musicList[bot.playlist_counter]
                     bot.currentSong = bot.musicList[bot.playlist_counter]
                     bot.playlist_counter = bot.playlist_counter + 1
-                    try:
-                        bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                    except:
-                        return
+                    #try:
+                    bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                    #except:
+                        #return
 	
         if (bot.currentVC.is_playing() and bot.currentVC.is_connected()):
       
@@ -291,10 +293,10 @@ class Music(commands.Cog):
                 bot.playlist_counter = bot.playlist_counter + 1
 
                 bot.currentVC.stop()
-                try:
-                        bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                except Exception:
-                        return 
+                #try:
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
+                #except Exception:
+                        #return 
     """
     def getMusicList(self):
         musicList = os.listdir('./media/mp3/playlist/')
@@ -435,6 +437,12 @@ class Misc(commands.Cog):
         bulborb = './media/bulborb/' + random.choice(os.listdir('./media/bulborb/'))
         await ctx.send(file=discord.File(bulborb))
 
+    #Posts a random Warrior Cats Image
+    @commands.command(name='cat',help='Posts a random warrior cats image')
+    async def cat(self, ctx):
+        cat = './media/cats/' + random.choice(os.listdir('./media/cats/'))
+        await ctx.send(file=discord.File(cat))
+
     #Plays the Bruh Sound
     @commands.command(name='bruh', help='Bruh')
     async def bruh(self, ctx):
@@ -460,10 +468,10 @@ class Misc(commands.Cog):
 
 
  
-                try:
-                    bot.currentVC.play(discord.FFmpegPCMAudio(source=bruh), after=my_after)
-                except:
-                    return
+                #try:
+                bot.currentVC.play(discord.FFmpegPCMAudio(source=bruh), after=my_after)
+                #except:
+                    #return
 
         else:
             await playingMessage(ctx)
