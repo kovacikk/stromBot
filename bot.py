@@ -39,10 +39,11 @@ async def on_command_error(ctx, error):
 	if (isinstance(error, CommandNotFound)):
 		await ctx.send("Command does not exist. That is really embarrassing " + ctx.author.display_name);
 		return
-	#print("error time");
-	file=open("log.txt", "a")
-	print(error);
-	file.write(error)
+
+	file=open("log.txt", "a+")
+	output = str(datetime.datetime.now()) + ": " + repr(error) + "\n"; 
+	print(error)
+	file.write(output)
 	file.close()
 
 bot.playlist_counter = 0
@@ -569,6 +570,44 @@ bot.add_cog(EverydayClassics(bot))
 bot.add_cog(Misc(bot))
 
 bot.loop.create_task(time_check())
+
+bot.remove_command("help")
+
+
+#Adding Custom Help Command
+@bot.command(name='help')
+async def help(ctx):
+	embed = discord.Embed(color =  0xeeeeee)
+
+	embed.add_field(name='Everyday Classics', value='--------------------', inline=False)
+	
+	embed.add_field(name='cancel', value='Use this to cancel someone!', inline=True)
+	embed.add_field(name='dailyMeme', value='Posts the appropriate meme for the day', inline=True)
+	embed.add_field(name='meme', value='Pull a classic meme from the archives', inline=True)
+	embed.add_field(name='goodnight', value='Say goodnight to all your friends' + '\n\u200b', inline=True)
+
+	
+	embed.add_field(name='Music', value='--------------------', inline=False);
+	
+	embed.add_field(name='song', value='Play a random song from the playlist without memes', inline=True)
+	embed.add_field(name='songMeme', value='Play a random song from the playlist with memes', inline=True)
+	embed.add_field(name='playlist', value='Shuffles songs from the playlist without memes', inline=True)	
+	embed.add_field(name='playlistMeme', value='Shuffles songs from the playlist with memes', inline=True)
+	embed.add_field(name='playing', value='Tells what song is currently playing', inline=True)
+	embed.add_field(name='skip', value='Skips currently playing song', inline=True)
+	embed.add_field(name='stop', value='Stops currently playing songs or clips' + '\n\u200b', inline=True)
+
+
+	embed.add_field(name='Miscellaneous', value='--------------------', inline=False)
+
+	embed.add_field(name='7', value='Seven Dollars', inline=True)
+	embed.add_field(name='bonk', value='Bonk', inline=True)	
+	embed.add_field(name='bruh', value='Bruh', inline=True)
+	embed.add_field(name='bulborb', value='Posts a random bulborb', inline=True)
+	embed.add_field(name='cat', value='Posts a random warrior cats image', inline=True)
+
+			
+	await ctx.send(embed=embed)
 
 bot.run(TOKEN)
 
