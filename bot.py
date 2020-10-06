@@ -88,6 +88,7 @@ class Music(commands.Cog):
                 bot.playlist_counter = 1
 
                 def my_after(error):
+                    bot.musicList = None
                     bot.currentSong = "None"
                     bot.currentVC.source.cleanup()
                     coro = bot.currentVC.disconnect()
@@ -144,7 +145,7 @@ class Music(commands.Cog):
                             bot.currentVC.source.cleanup()
                             coro = bot.currentVC.disconnect()
                             fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
-
+                            bot.musicList = None
                             bot.currentSong = "None"
                         else:
                             randomSong = './media/mp3/playlist/memeful/' + bot.musicList[bot.playlist_counter]
@@ -184,6 +185,7 @@ class Music(commands.Cog):
                 bot.playlist_counter = 1
 
                 def my_after(error):
+                    bot.musicList = None
                     bot.currentSong = "None"
                     bot.currentVC.source.cleanup()
                     coro = bot.currentVC.disconnect()
@@ -241,8 +243,9 @@ class Music(commands.Cog):
                             coro = bot.currentVC.disconnect()
                             fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
                             bot.currentSong = "None"
+                            bot.musicList = None
                         else:
-                            randomSong = './media/mp3/playlist/memeful/' + bot.musicList[bot.playlist_counter]
+                            randomSong = './media/mp3/playlist/memeless/' + bot.musicList[bot.playlist_counter]
                             bot.currentSong = bot.musicList[bot.playlist_counter]
                             bot.playlist_counter = bot.playlist_counter + 1
                             #try:
@@ -276,7 +279,14 @@ class Music(commands.Cog):
                     bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
                     #except:
                         #return
-	
+                else:
+                    bot.musicList = None
+                    bot.currentVC.source.cleanup()
+                    coro = bot.currentVC.disconnect()
+                    fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
+                    bot.currentSong = "None"
+
+
         if (bot.currentVC.is_playing() and bot.currentVC.is_connected()):
       
             if (bot.musicList == None or bot.playlist_counter >= len(bot.musicList)):
@@ -319,6 +329,7 @@ class Music(commands.Cog):
 
 	#Make sure Bot is connected to a voice channel
         if bot.currentVC != None and bot.currentVC.is_connected():
+                bot.musicList = None
                 bot.currentVC.source.cleanup()
                 coro = bot.currentVC.disconnect()
                 fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
