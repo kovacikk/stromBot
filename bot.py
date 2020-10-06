@@ -13,12 +13,13 @@ import traceback
 #import time
 
 #time.sleep(5)
-
+intents = discord.Intents.default()
+intents.members = True
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-bot = commands.Bot(command_prefix='s!')
+bot = commands.Bot(command_prefix='s!', intents=intents)
 client = discord.Client()
 
 bot.last_song = ""
@@ -348,6 +349,8 @@ class EverydayClassics(commands.Cog):
     @commands.command(name='cancel', help='Use this to cancel someone!')
     async def cancelDrew(self, ctx):
         randomUserId = random.choice(ctx.message.guild.members).id
+
+        print(ctx.message.guild.members)
 
         ran = random.choice(range(10))
 
