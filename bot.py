@@ -350,14 +350,14 @@ class EverydayClassics(commands.Cog):
     async def cancelDrew(self, ctx):
         randomUserId = random.choice(ctx.message.guild.members).id
 
-        print(ctx.message.guild.members)
+        #print(ctx.message.guild.members)
 
         ran = random.choice(range(10))
 
         if (ran < 2):
             randomUserId = 159433180036726784
 
-        randomUser = bot.get_user(randomUserId).display_name
+        randomUser = ctx.message.guild.get_member(randomUserId).display_name
         response = randomUser + " is cancelled"
         await ctx.send(response)
 
@@ -400,6 +400,46 @@ class EverydayClassics(commands.Cog):
         dayMeme = './media/dayMemes/' + dayMeme
         await ctx.send(file=discord.File(dayMeme)) 
 
+    #Posts a Knuckle Video to Rate your meme
+    @commands.command(name='rateMeme', help='Rates your meme!')
+    async def rateMeme(self, ctx):
+        randomRate = './media/mp4/rateMeme/' + random.choice(os.listdir('./media/mp4/rateMeme/'))
+        await ctx.send(file=discord.File(randomRate))
+
+    #Rates The Previous Post from 1 to 10
+    @commands.command(name='ratePost', help="Rates the latest Post from 1 to 10")
+    async def ratePost(self, ctx):
+        rating = 0
+        message = ""
+        	
+        post = await ctx.channel.history(limit = 2).flatten()
+        if (post[1].author == bot.user):
+            rating = 10
+        else:
+            rating = random.choice(range(10)) + 1
+        
+        if (rating == 10):
+            message = "**10/10**\n" + post[1].author.display_name + ", I absolutely love that post!!!! Perfection! That should go in the world record for best discord posts!!! You deserve a medal right now!!"
+        elif (rating == 9):
+            message =  "**9/10**\n" + post[1].author.display_name + ", I really like that post, almost a near perfect one at that. You should try other skills like bowling."
+        elif (rating == 8):
+            message = "**8/10**\n" + post[1].author.display_name + ", I think that post was really good, thoroughly enjoyable. Next Time try really hard to break those limits to get a perfect post."
+        elif (rating == 7):
+            message = "**7/10**\n" + post[1].author.display_name + ", that post was pretty good, almost great. Like a good ham sandwhich, but not too good of a ham sandwhich."
+        elif (rating == 6):
+            message = "**6/10**\n" + post[1].author.display_name + ", I  think that post was pretty okay, could use some work. I have a feeling that you could do better with a bit more effort."
+        elif (rating == 5):
+            message = "**5/10**\n" + post[1].author.display_name + ", pretty meh post, doesn't really stand out to me. Kinda disappointed not gonna lie."
+        elif (rating == 4):
+            message = "**4/10**\n" + post[1].author.display_name + ", not a good post. I think you really need to re-evaluate your posts. It reminds of that time I bought a lobster, but the lobster wasn't a pure bred."
+        elif (rating == 3):
+            message = "**3/10**\n" + post[1].author.display_name + ", what an awful post. I hated it. You need to up your game a LOT. Not looking forward to your next post."
+        elif (rating == 2):
+            message = "**2/10**\n" + post[1].author.display_name + ", I feel like that post was trying to make me mad. Well, you succeeded. That was a terrible post. Please don't ever post again. This is way worse than that lobster time."
+        elif (rating == 1):
+            message = "**1/10**\n" + post[1].author.display_name + ", or should I say " + post[1].author.display_name[:len(post[1].author.display_name) // 2] + "Dumb, WOW!!!! RING RING RING!!!!! You are a terrible poster, terrible person for even thinking about that post. AND then you sent it!!!!!! I am so appalled right now. Your lucky there aren't ban privileges in this command. Because you WOULD be banned right now." 
+        
+        await ctx.send(message)
 
 """
 
@@ -598,6 +638,8 @@ async def help(ctx):
 	embed.add_field(name='cancel', value='Use this to cancel someone!', inline=True)
 	embed.add_field(name='dailyMeme', value='Posts the appropriate meme for the day', inline=True)
 	embed.add_field(name='meme', value='Pull a classic meme from the archives', inline=True)
+	embed.add_field(name='ratePost', value="Rates the latest post from 1-10", inline=True)
+	embed.add_field(name='rateMeme', value='Rates your meme!', inline=True)
 	embed.add_field(name='goodnight', value='Say goodnight to all your friends' + '\n\u200b', inline=True)
 
 	
