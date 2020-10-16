@@ -1,6 +1,11 @@
-#bot.py
-import os
+"""
+bot.py
 
+- Contains main discord bot functions, loads other files and connects
+
+"""
+
+import os
 import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
@@ -10,11 +15,25 @@ import asyncio
 import datetime
 from datetime import timedelta
 import traceback
-#import time
 
-#time.sleep(5)
+#Import Other Files
+import music
+import classics
+import misc
+
+#Encoding for Playing Music
+#import ctypes
+#import ctypes.util
+#opusLocation = ctypes.util.find_library('opus')
+#a = discord.opus.load_opus(opusLocation)
+
+
+
+#Intents for Discord Permissions
 intents = discord.Intents.default()
 intents.members = True
+
+
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -22,17 +41,20 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 bot = commands.Bot(command_prefix='s!', intents=intents)
 client = discord.Client()
 
-bot.last_song = ""
-
-bot.acridTime = datetime.datetime.now() - timedelta(minutes=5);
-
+#ID of the Admin
 bot.adminId = 170301539020308481;
+#ID for general text channel
 bot.generalId = 159415088824975360;
 
-#Says a message when a new member enters the discord
+#Time 5 Minutes Ago
+bot.acridTime = datetime.datetime.now() - timedelta(minutes=5);
+
+#Prints When Bot has Connected
 @bot.event
 async def on_ready():
     print(bot.user.name + ' has connected to Discord!')
+
+
 
 #Default if no command is found
 @bot.event
@@ -47,495 +69,15 @@ async def on_command_error(ctx, error):
 	file.write(output)
 	file.close()
 
-bot.playlist_counter = 0
-bot.musicList = None
-bot.currentVC = None
-bot.currentSong = "None"
-bot.currentList = "memeful/"
-
-
-#Tuesday at 12:00 pm
-bot.reginaldTime = "12:00"
-bot.reginaldDay = 1
-bot.reginaldBool = False
 
 
 """
 
-    Music
-
-"""
-class Music(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot  
-
-    
-    #Picks a song from the playlist and plays it
-    @commands.command(name='songMeme', help='Play a random song from the playlist')
-    async def songMeme(self, ctx):
-        if (bot.currentVC == None or not bot.currentVC.is_playing()):
-            user = ctx.message.author
-            userVC = user.voice.channel
-
-            if userVC != None:
-                channelName = userVC.name
-                voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
-                bot.currentVC = await voiceChannel.connect()
-
-                randomChoice = random.choice(os.listdir('./media/mp3/playlist/memeful/'))
-                randomSong = './media/mp3/playlist/memeful/' + randomChoice
-                
-                bot.musicList = [randomChoice]
-                bot.playlist_counter = 1
-
-                def my_after(error):
-                    bot.musicList = None
-                    bot.currentSong = "None"
-                    bot.currentVC.source.cleanup()
-                    coro = bot.currentVC.disconnect()
-                    fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
-                    try:
-                        fut.result()
-                    except:
-                        # an error happened sending the message
-                        pass    
-
-                bot.currentList = "memeful/"
-
-                bot.currentSong = bot.musicList[0]
-                
-                #try:
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                #except:
-                        #return
-        else:
-            await playingMessage(ctx)
-
-
-    #Picks songs from the playlist and plays them
-    @commands.command(name='playlistMeme', help='Shuffles songs from the playlist')
-    async def songsMeme(self, ctx):
-        if (bot.currentVC == None or not bot.currentVC.is_playing()):
-            user = ctx.message.author
-            userVC = user.voice.channel
-
-            if userVC != None:
-                channelName = userVC.name
-                voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
-                bot.currentVC = await voiceChannel.connect()
-
-
-                bot.musicList = os.listdir('./media/mp3/playlist/memeful/')
-                random.shuffle(bot.musicList)
-
-                #print(bot.playlist_counter)
-                #print(len(bot.musicList))
-
-                randomSong = './media/mp3/playlist/memeful/' + bot.musicList[0]
-            
-                bot.playlist_counter = 1
-
-
-
-                def my_after(error):
-                    if (bot.musicList != None and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
-                        #print(bot.playlist_counter)
-                        #print(len(bot.musicList))
-
-                        if bot.playlist_counter >= len(bot.musicList):
-                            bot.currentVC.source.cleanup()
-                            coro = bot.currentVC.disconnect()
-                            fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
-                            bot.musicList = None
-                            bot.currentSong = "None"
-                        else:
-                            randomSong = './media/mp3/playlist/memeful/' + bot.musicList[bot.playlist_counter]
-                            bot.currentSong = bot.musicList[bot.playlist_counter]
-                            bot.playlist_counter = bot.playlist_counter + 1
-                            #try:
-                            bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                            #except:
-                                #return
-            
-                bot.currentList = "memeful/"
-                
-                bot.currentSong = bot.musicList[0]
-                #try:
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                #except:
-                    #return
-        else:
-            await playingMessage(ctx)
-
-    #Picks a song from the playlist and plays it
-    @commands.command(name='song', help='Play a random song from the playlist without memes')
-    async def song(self, ctx):
-        if (bot.currentVC == None or not bot.currentVC.is_playing()):
-            user = ctx.message.author
-            userVC = user.voice.channel
-
-            if userVC != None:
-                channelName = userVC.name
-                voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
-                bot.currentVC = await voiceChannel.connect()
-
-                randomChoice = random.choice(os.listdir('./media/mp3/playlist/memeless/'))
-                randomSong = './media/mp3/playlist/memeless/' + randomChoice
-                
-                bot.musicList = [randomChoice]
-                bot.playlist_counter = 1
-
-                def my_after(error):
-                    bot.musicList = None
-                    bot.currentSong = "None"
-                    bot.currentVC.source.cleanup()
-                    coro = bot.currentVC.disconnect()
-                    fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
-                    try:
-                        fut.result()
-                    except:
-                        # an error happened sending the message
-                        pass    
-
-                bot.currentList = "memeless/"
-
-                bot.currentSong = bot.musicList[0]
-                #try:
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                #except:
-                    #return
-        else:
-            await playingMessage(ctx)
-
-
-    #Picks songs from the playlist and plays them
-    @commands.command(name='playlist', help='Shuffles songs from the playlist without memes')
-    async def songs(self, ctx):
-        if (bot.currentVC == None or not bot.currentVC.is_playing()):
-            user = ctx.message.author
-            userVC = user.voice.channel
-
-            if userVC != None:
-                channelName = userVC.name
-                voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
-                bot.currentVC = await voiceChannel.connect()
-
-
-                bot.musicList = os.listdir('./media/mp3/playlist/memeless/')
-                random.shuffle(bot.musicList)
-
-                randomSong = './media/mp3/playlist/memeless/' + bot.musicList[0]
-           
-                #print(bot.playlist_counter)
-                #print(len(bot.musicList))
- 
-                bot.playlist_counter = 1
-
-		
-
-                def my_after(error):
-                    if (bot.musicList != None and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
-                        
-                        #print(bot.playlist_counter)
-                        #print(len(bot.musicList))		
-
-                        if bot.playlist_counter >= len(bot.musicList):
-                            bot.currentVC.source.cleanup()
-                            coro = bot.currentVC.disconnect()
-                            fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
-                            bot.currentSong = "None"
-                            bot.musicList = None
-                        else:
-                            randomSong = './media/mp3/playlist/memeless/' + bot.musicList[bot.playlist_counter]
-                            bot.currentSong = bot.musicList[bot.playlist_counter]
-                            bot.playlist_counter = bot.playlist_counter + 1
-                            #try:
-                            bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                            #except:
-                                #return
-
-                bot.currentList = "memeless/"
-                
-                bot.currentSong = bot.musicList[0]
-                #try:
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                #except:
-                    #return
-        else:
-            await playingMessage(ctx)
-
-
-    #Skips currently played song
-    @commands.command(name='skip', help='Skips currently played song')
-    async def skip(self, ctx):
-        def my_after(error):
-                if (bot.musicList != None and bot.playlist_counter <= len(bot.musicList) and not bot.currentVC.is_playing() and bot.currentVC.is_connected()):
-                    #print(bot.playlist_counter)
-                    #print(len(bot.musicList))
-
-                    randomSong = './media/mp3/playlist/' + bot.currentList + bot.musicList[bot.playlist_counter]
-                    bot.currentSong = bot.musicList[bot.playlist_counter]
-                    bot.playlist_counter = bot.playlist_counter + 1
-                    #try:
-                    bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                    #except:
-                        #return
-                else:
-                    bot.musicList = None
-                    bot.currentVC.source.cleanup()
-                    coro = bot.currentVC.disconnect()
-                    fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
-                    bot.currentSong = "None"
-
-
-        if (bot.currentVC.is_playing() and bot.currentVC.is_connected()):
-      
-            if (bot.musicList == None or bot.playlist_counter >= len(bot.musicList)):
-                bot.playlist_counter = 0
-                bot.musicList = None
-                server = ctx.message.guild.voice_client
-                await server.disconnect()
-                bot.currentSong = "None"
-            else:
-                #print(bot.playlist_counter)
-                #print(len(bot.musicList))
-
-                randomSong = './media/mp3/playlist/' + bot.currentList + bot.musicList[bot.playlist_counter]
-                bot.currentSong = bot.musicList[bot.playlist_counter]
-                bot.playlist_counter = bot.playlist_counter + 1
-
-                bot.currentVC.stop()
-                #try:
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                #except Exception:
-                        #return 
-    """
-    def getMusicList(self):
-        musicList = os.listdir('./media/mp3/playlist/')
-        random.shuffle(musicList)
-
-        return musicList
-    """
-
-    #Explains what songs is currently playing
-    @commands.command(name="playing", help="Tells what song is currently playing")
-    async def playing(self, ctx):
-        response = "The song: \'" + bot.currentSong + "\' is currently playing"
-        await ctx.send(response)
-
-
-    #Disconnects Bot from Voice Chat
-    @commands.command(name='stop', help='Stops music or clips from being played in voice', pass_context=True)
-    async def stop(self, ctx):
-
-	#Make sure Bot is connected to a voice channel
-        if bot.currentVC != None and bot.currentVC.is_connected():
-                bot.musicList = None
-                bot.currentVC.source.cleanup()
-                coro = bot.currentVC.disconnect()
-                fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
-                bot.currentSong = "None"
+    General Helper Functions
 
 """
 
-    Everyday Classics
-
-"""
-class EverydayClassics(commands.Cog):  
-    def __init__(self, bot):
-        self.bot = bot  
-
-    #Cancels Someone (Probably Drew)
-    @commands.command(name='cancel', help='Use this to cancel someone!')
-    async def cancelDrew(self, ctx):
-        randomUserId = random.choice(ctx.message.guild.members).id
-
-        #print(ctx.message.guild.members)
-
-        ran = random.choice(range(10))
-
-        if (ran < 2):
-            randomUserId = 159433180036726784
-
-        randomUser = ctx.message.guild.get_member(randomUserId).display_name
-        response = randomUser + " is cancelled"
-        await ctx.send(response)
-
-
-    #Posts the Goodnight Video
-    @commands.command(name='goodnight', help='Say goodnight to all your friends')
-    async def goodnight(self, ctx):
-        area = ctx.message.channel
-        await ctx.send(file=discord.File('./media/mp4/goodnight.mp4'))
-
-
-    #Posts a random Classic Meme
-    @commands.command(name='meme', help='Pull a classic meme from the archives')
-    async def classicMeme(self, ctx):
-        randomMeme = './media/classicMemes/' + random.choice(os.listdir('./media/classicMemes/'))
-        await ctx.send(file=discord.File(randomMeme))
-
-
-    #Posts the appropriate meme for the day
-    @commands.command(name='dailyMeme', help='Posts the appropriate meme for the day')
-    async def dailyMeme(self, ctx):
-        day = datetime.date.today().weekday()
-        dayMeme = ""
-
-        if (day == 0):
-            dayMeme = 'monday.mp4'
-        elif(day == 1):
-            dayMeme = 'tuesday.mp4'
-        elif(day == 2):
-            dayMeme = 'wednesday.mp4'
-        elif(day == 3):
-            dayMeme = 'thursday.mp4'
-        elif(day == 4):
-            dayMeme = 'friday.mp4'
-        elif(day == 5):
-            dayMeme = 'saturday.mp4'
-        elif(day == 6):
-            dayMeme = 'sunday.mp4'
-
-        dayMeme = './media/dayMemes/' + dayMeme
-        await ctx.send(file=discord.File(dayMeme)) 
-
-    #Posts a Knuckle Video to Rate your meme
-    @commands.command(name='rateMeme', help='Rates your meme!')
-    async def rateMeme(self, ctx):
-        randomRate = './media/mp4/rateMeme/' + random.choice(os.listdir('./media/mp4/rateMeme/'))
-        await ctx.send(file=discord.File(randomRate))
-
-    #Rates The Previous Post from 1 to 10
-    @commands.command(name='ratePost', help="Rates the latest Post from 1 to 10")
-    async def ratePost(self, ctx):
-        rating = 0
-        message = ""
-        	
-        post = await ctx.channel.history(limit = 2).flatten()
-        if (post[1].author == bot.user):
-            rating = 10
-        else:
-            rating = random.choice(range(10)) + 1
-        
-        if (rating == 10):
-            message = "**10/10**\n" + post[1].author.display_name + ", I absolutely love that post!!!! Perfection! That should go in the world record for best discord posts!!! You deserve a medal right now!!"
-        elif (rating == 9):
-            message =  "**9/10**\n" + post[1].author.display_name + ", I really like that post, almost a near perfect one at that. You should try other skills like bowling."
-        elif (rating == 8):
-            message = "**8/10**\n" + post[1].author.display_name + ", I think that post was really good, thoroughly enjoyable. Next Time try really hard to break those limits to get a perfect post."
-        elif (rating == 7):
-            message = "**7/10**\n" + post[1].author.display_name + ", that post was pretty good, almost great. Like a good ham sandwhich, but not too good of a ham sandwhich."
-        elif (rating == 6):
-            message = "**6/10**\n" + post[1].author.display_name + ", I  think that post was pretty okay, could use some work. I have a feeling that you could do better with a bit more effort."
-        elif (rating == 5):
-            message = "**5/10**\n" + post[1].author.display_name + ", pretty meh post, doesn't really stand out to me. Kinda disappointed not gonna lie."
-        elif (rating == 4):
-            message = "**4/10**\n" + post[1].author.display_name + ", not a good post. I think you really need to re-evaluate your posts. It reminds of that time I bought a lobster, but the lobster wasn't a pure bred."
-        elif (rating == 3):
-            message = "**3/10**\n" + post[1].author.display_name + ", what an awful post. I hated it. You need to up your game a LOT. Not looking forward to your next post."
-        elif (rating == 2):
-            message = "**2/10**\n" + post[1].author.display_name + ", I feel like that post was trying to make me mad. Well, you succeeded. That was a terrible post. Please don't ever post again. This is way worse than that lobster time."
-        elif (rating == 1):
-            message = "**1/10**\n" + post[1].author.display_name + ", or should I say " + post[1].author.display_name[:len(post[1].author.display_name) // 2] + "Dumb, WOW!!!! RING RING RING!!!!! You are a terrible poster, terrible person for even thinking about that post. AND then you sent it!!!!!! I am so appalled right now. Your lucky there aren't ban privileges in this command. Because you WOULD be banned right now." 
-        
-        await ctx.send(message)
-
-"""
-
-    Miscellaneous
-
-"""
-class Misc(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    #Picks a seven dollars clip and plays it
-    @commands.command(name='7', help='Seven Dollars')
-    async def sevenDollars(self, ctx):
-        if (bot.currentVC == None or not bot.currentVC.is_playing()):
-            user = ctx.message.author
-            userVC = user.voice.channel
-
-            if userVC != None:
-                channelName = userVC.name
-                voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
-                bot.currentVC = await voiceChannel.connect()
-
-                randomSong = './media/mp3/shane/' + random.choice(os.listdir('./media/mp3/shane/'))
-
-                def my_after(error):
-                    bot.currentVC.source.cleanup()
-                    coro = bot.currentVC.disconnect()
-                    fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
-                    try:
-                        fut.result()
-                    except:
-                        # an error happened sending the message
-                        pass    
-
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
-                
-        else:
-            await playingMessage(ctx)
-
-
-    #Posts the Bonk Video
-    @commands.command(name='bonk', help='Bonk')
-    async def bonk(self, ctx):
-        await ctx.send(file=discord.File('./media/mp4/bonk.mp4'))
-
-
-    #Posts a random Pikmin Meme
-    @commands.command(name='bulborb', help='Posts a random bulborb')
-    async def bulborb(self, ctx):
-        bulborb = './media/bulborb/' + random.choice(os.listdir('./media/bulborb/'))
-        await ctx.send(file=discord.File(bulborb))
-
-    #Posts a random Warrior Cats Image
-    @commands.command(name='cat',help='Posts a random warrior cats image')
-    async def cat(self, ctx):
-        cat = './media/cats/' + random.choice(os.listdir('./media/cats/'))
-        await ctx.send(file=discord.File(cat))
-
-    #Plays the Bruh Sound
-    @commands.command(name='bruh', help='Bruh')
-    async def bruh(self, ctx):
-        bruh = './media/mp3/bruh/bruh.mp3'
-        if (bot.currentVC == None or not bot.currentVC.is_playing()):
-            user = ctx.message.author
-            userVC = user.voice.channel
-
-            if userVC != None:
-                channelName = userVC.name
-                voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
-                bot.currentVC = await voiceChannel.connect()
-       
-                def my_after(error):
-                    bot.currentVC.source.cleanup()
-                    coro = bot.currentVC.disconnect()
-                    fut = asyncio.run_coroutine_threadsafe(coro, bot.loop)
-                    try:
-                        fut.result()
-                    except:
-                        # an error happened sending the message
-                        pass    
-
-
- 
-                #try:
-                bot.currentVC.play(discord.FFmpegPCMAudio(source=bruh), after=my_after)
-                #except:
-                    #return
-
-        else:
-            await playingMessage(ctx)
-
-"""
-
-    Random Functions
-
-"""
+#Used for Checking the Time for Reginald
 async def time_check():
     await bot.wait_until_ready()
     message_channel=bot.get_channel(bot.generalId)
@@ -559,6 +101,7 @@ async def time_check():
         await asyncio.sleep(time)
 
 
+#Sends a message if someone tries to play something while it is already playing
 async def playingMessage(ctx):
         response = ""
         
@@ -569,7 +112,9 @@ async def playingMessage(ctx):
 
         await ctx.send(response)
 
-#Used for hidden commands
+
+
+#First Command Manager
 @bot.event
 async def on_message(ctx):
 	if (ctx.author == bot.user):
@@ -612,6 +157,8 @@ async def on_message(ctx):
 	#Go to Other Commands
 	await bot.process_commands(ctx);
 
+
+#Checks enough time has passed to post Acrid
 def getAcridTime():
 	now = datetime.datetime.now()
 	if (bot.acridTime + timedelta(minutes=5) < now):
@@ -619,16 +166,19 @@ def getAcridTime():
 	else:
 		return False 
 
-bot.add_cog(Music(bot))
-bot.add_cog(EverydayClassics(bot))
-bot.add_cog(Misc(bot))
+
+
+#Add commands from other files
+bot.add_cog(music.Music(bot))
+bot.add_cog(classics.EverydayClassics(bot))
+bot.add_cog(misc.Misc(bot))
 
 bot.loop.create_task(time_check())
 
 bot.remove_command("help")
 
 
-#Adding Custom Help Command
+#Custom Help Command
 @bot.command(name='help')
 async def help(ctx):
 	embed = discord.Embed(color =  0xeeeeee)
@@ -665,6 +215,7 @@ async def help(ctx):
 			
 	await ctx.send(embed=embed)
 
+#Run Bot
 bot.run(TOKEN)
 
 
