@@ -72,6 +72,11 @@ class Misc(commands.Cog):
         await ctx.send(file=discord.File('./media/mp4/bonk.mp4'))
 
 
+    #Posts the Yes Gif
+    @commands.command(name='yes', help='Steve Ballmer sweaty reaction')
+    async def yes(self, ctx):
+        await ctx.send('https://tenor.com/view/steve-ballmer-yes-microsoft-gif-4349581')
+
     #Posts a random Pikmin Meme
     @commands.command(name='bulborb', help='Posts a random bulborb')
     async def bulborb(self, ctx):
@@ -80,9 +85,25 @@ class Misc(commands.Cog):
 
     #Posts a random Warrior Cats Image
     @commands.command(name='cat',help='Posts a random warrior cats image')
-    async def cat(self, ctx):
-        cat = './media/cats/' + random.choice(os.listdir('./media/cats/'))
-        await ctx.send(file=discord.File(cat))
+    async def cat(self, ctx, *query):
+        #cat = './media/cats/' + random.choice(os.listdir('./media/cats/'))
+        #await ctx.send(file=discord.File(cat))
+
+        if (len(query)  == 0):
+            cat = './media/cats/' + random.choice(os.listdir('./media/cats/'))
+            await ctx.send(file=discord.File(cat))
+        else:
+            matching = os.listdir('./media/cats/')
+            for arg in query:
+
+                matching = [s for s in matching if arg.upper() in s.upper()]
+
+            if (len(matching) == 0):
+                await ctx.send('No results found')
+            else:
+                cat= './media/cats/' + random.choice(matching)
+                await ctx.send(file=discord.File(cat))
+
 
     #Plays the Bruh Sound
     @commands.command(name='bruh', help='Bruh')
@@ -167,14 +188,15 @@ class Misc(commands.Cog):
         else:
             await ctx.send("Not In a Battle") 
 
-    #Cards Thing
-    @commands.command(name = 'drop', help = 'Drops Card')
-    async def drop(self, ctx):
-        #ID
-        await ctx.send("kd")
+    #Coin Flip
+    @commands.command(name = 'coin', help = 'Flips a coin')
+    async def coin(self, ctx):
+        flip = random.choice(range(2));
 
-
-
+        if (flip):
+            await ctx.send("Heads")
+        else:
+            await ctx.send("Tails")
 
 
 #Check if user is in a Dm 

@@ -49,6 +49,9 @@ bot.generalId = 159415088824975360;
 
 #Time 5 Minutes Ago
 bot.acridTime = datetime.datetime.now() - timedelta(minutes=5);
+bot.bryceTime = bot.acridTime
+bot.ballmerTime = bot.acridTime
+
 
 #Prints When Bot has Connected
 @bot.event
@@ -157,6 +160,21 @@ async def on_message(ctx):
 		bot.acridTime = datetime.datetime.now()
 		await ctx.channel.send(file=discord.File(acrid));
 
+	if (url == 'bryce.gif' and getBryceTime()):
+		bryce = './media/gif/bryce.gif'
+
+		#Set the time last bryce was posted
+		bot.bryceTime = datetime.datetime.now()
+		await ctx.channel.send(file=discord.File(bryce));
+
+
+	if (ctx.content == 'https://tenor.com/view/steve-ballmer-yes-microsoft-gif-4349581' and getBallmerTime()):
+
+		#Set the time last ballmer was posted
+		bot.ballmerTime = datetime.datetime.now()
+		await ctx.channel.send('https://tenor.com/view/steve-ballmer-yes-microsoft-gif-4349581');
+
+
 	#Go to Other Commands
 	await bot.process_commands(ctx);
 
@@ -169,6 +187,21 @@ def getAcridTime():
 	else:
 		return False 
 
+#Checks enough time has passed to post Ballmer
+def getBallmerTime():
+	now = datetime.datetime.now()
+	if (bot.ballmerTime + timedelta(minutes=5) < now):
+		return True
+	else:
+		return False 
+
+#Checks enough time has passed to post Bryce
+def getBryceTime():
+	now = datetime.datetime.now()
+	if (bot.bryceTime + timedelta(minutes=5) < now):
+		return True
+	else:
+		return False 
 
 
 #Add commands from other files
@@ -190,7 +223,7 @@ async def help(ctx):
 	
 	embed.add_field(name='cancel', value='Use this to cancel someone!', inline=True)
 	embed.add_field(name='dailyMeme', value='Posts the appropriate meme for the day', inline=True)
-	embed.add_field(name='meme', value='Pull a classic meme from the archives', inline=True)
+	embed.add_field(name='meme', value='Pull a classic meme from the archives\nUse \'s!meme arg1 arg2\' to search for memes containing those words', inline=True)
 	embed.add_field(name='ratePost', value="Rates the latest post from 1-10", inline=True)
 	embed.add_field(name='rateMeme', value='Rates your meme!', inline=True)
 	embed.add_field(name='goodnight', value='Say goodnight to all your friends' + '\n\u200b', inline=True)
@@ -210,11 +243,12 @@ async def help(ctx):
 	embed.add_field(name='Miscellaneous', value='--------------------', inline=False)
 
 	embed.add_field(name='7', value='Seven Dollars', inline=True)
-	embed.add_field(name='bonk', value='Bonk', inline=True)	
+	embed.add_field(name='bonk', value='Bonk', inline=True)
+	embed.add_field(name='yes', value='Posts Steve Ballmer funny sweat yes video', inline=True)
 	embed.add_field(name='bruh', value='Bruh', inline=True)
 	embed.add_field(name='bulborb', value='Posts a random bulborb', inline=True)
-	embed.add_field(name='cat', value='Posts a random warrior cats image', inline=True)
-
+	embed.add_field(name='cat', value='Posts a random warrior cats image\n Use \'s!cat arg1 arg2...\' to search for cats containing those words', inline=True)
+	embed.add_field(name='coin', value='Flips a coin', inline=True)
 			
 	await ctx.send(embed=embed)
 

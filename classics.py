@@ -47,10 +47,22 @@ class EverydayClassics(commands.Cog):
 
     #Posts a random Classic Meme
     @commands.command(name='meme', help='Pull a classic meme from the archives')
-    async def classicMeme(self, ctx):
-        randomMeme = './media/classicMemes/' + random.choice(os.listdir('./media/classicMemes/'))
-        await ctx.send(file=discord.File(randomMeme))
+    async def classicMeme(self, ctx, *query):
+        
+        if (len(query)  == 0):
+            randomMeme = './media/classicMemes/' + random.choice(os.listdir('./media/classicMemes/'))
+            await ctx.send(file=discord.File(randomMeme))
+        else:
+            matching = os.listdir('./media/classicMemes/')
+            for arg in query:
+                
+                matching = [s for s in matching if arg.upper() in s.upper()]
 
+            if (len(matching) == 0):
+                await ctx.send('No results found')
+            else:
+                randomMeme = './media/classicMemes/' + random.choice(matching)
+                await ctx.send(file=discord.File(randomMeme))
 
     #Posts the appropriate meme for the day
     @commands.command(name='dailyMeme', help='Posts the appropriate meme for the day')
@@ -59,22 +71,28 @@ class EverydayClassics(commands.Cog):
         dayMeme = ""
 
         if (day == 0):
-            dayMeme = 'monday.mp4'
+            dayMeme = 'monday/'
         elif(day == 1):
-            dayMeme = 'tuesday.mp4'
+            dayMeme = 'tuesday/'
         elif(day == 2):
-            dayMeme = 'wednesday.mp4'
+            dayMeme = 'wednesday/'
         elif(day == 3):
-            dayMeme = 'thursday.mp4'
+            dayMeme = 'thursday/'
         elif(day == 4):
-            dayMeme = 'friday.mp4'
+            dayMeme = 'friday/'
         elif(day == 5):
-            dayMeme = 'saturday.mp4'
+            dayMeme = 'saturday/'
         elif(day == 6):
-            dayMeme = 'sunday.mp4'
+            dayMeme = 'sunday/'
 
         dayMeme = './media/dayMemes/' + dayMeme
-        await ctx.send(file=discord.File(dayMeme)) 
+               
+        if (random.choice(range(20)) == 0):
+            await(ctx.send(file=discord.File("./media/dayMemes/wednesday/always.mp4")))
+        else:
+             await ctx.send(file=discord.File(dayMeme + random.choice(os.listdir(dayMeme)))) 
+
+
 
     #Posts a Knuckle Video to Rate your meme
     @commands.command(name='rateMeme', help='Rates your meme!')

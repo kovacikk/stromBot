@@ -28,7 +28,7 @@ class Music(commands.Cog):
 
     #Picks a song from the playlist and plays it
     @commands.command(name='songMeme', help='Play a random song from the playlist')
-    async def songMeme(self, ctx):
+    async def songMeme(self, ctx, *query):
         if (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
             user = ctx.message.author
             userVC = user.voice.channel
@@ -37,11 +37,28 @@ class Music(commands.Cog):
             if userVC != None:
                 channelName = userVC.name
                 voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
+                                
+                #randomChoice = random.choice(os.listdir('./media/mp3/playlist/memeful/'))
+                #randomSong = './media/mp3/playlist/memeful/' + randomChoice
+
+                if (len(query)  == 0):
+                    randomChoice = random.choice(os.listdir('./media/mp3/playlist/memeful/'))
+                    randomSong = './media/mp3/playlist/memeful/' + randomChoice
+                else:
+                    matching = os.listdir('./media/mp3/playlist/memeful/')
+                    for arg in query:
+
+                        matching = [s for s in matching if arg.upper() in s.upper()]
+
+                    if (len(matching) == 0):
+                        await ctx.send('No results found')
+                        return
+                    else:
+                        randomChoice =  random.choice(matching)
+                        randomSong = './media/mp3/playlist/memeful/' + randomChoice
+                
                 self.bot.currentVC = await voiceChannel.connect()
 
-                randomChoice = random.choice(os.listdir('./media/mp3/playlist/memeful/'))
-                randomSong = './media/mp3/playlist/memeful/' + randomChoice
-                
                 self.bot.musicList = [randomChoice]
                 self.bot.playlist_counter = 1
 
@@ -125,7 +142,7 @@ class Music(commands.Cog):
 
     #Picks a song from the playlist and plays it
     @commands.command(name='song', help='Play a random song from the playlist without memes')
-    async def song(self, ctx):
+    async def song(self, ctx, *query):
         if (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
             user = ctx.message.author
             userVC = user.voice.channel
@@ -134,11 +151,28 @@ class Music(commands.Cog):
             if userVC != None:
                 channelName = userVC.name
                 voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
+
+                #randomChoice = random.choice(os.listdir('./media/mp3/playlist/memeless/'))
+                #randomSong = './media/mp3/playlist/memeless/' + randomChoice
+               
+                if (len(query)  == 0):
+                    randomChoice = random.choice(os.listdir('./media/mp3/playlist/memeless/'))
+                    randomSong = './media/mp3/playlist/memeless/' + randomChoice
+                else:
+                    matching = os.listdir('./media/mp3/playlist/memeless/')
+                    for arg in query:
+
+                        matching = [s for s in matching if arg.upper() in s.upper()]
+
+                    if (len(matching) == 0):
+                        await ctx.send('No results found')
+                        return
+                    else:
+                        randomChoice = random.choice(matching)
+                        randomSong = './media/mp3/playlist/memeless/' + randomChoice
+ 
                 self.bot.currentVC = await voiceChannel.connect()
 
-                randomChoice = random.choice(os.listdir('./media/mp3/playlist/memeless/'))
-                randomSong = './media/mp3/playlist/memeless/' + randomChoice
-                
                 self.bot.musicList = [randomChoice]
                 self.bot.playlist_counter = 1
 
