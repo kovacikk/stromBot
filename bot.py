@@ -223,7 +223,7 @@ async def help(ctx):
 	
 	embed.add_field(name='cancel', value='Use this to cancel someone!', inline=True)
 	embed.add_field(name='dailyMeme', value='Posts the appropriate meme for the day', inline=True)
-	embed.add_field(name='meme', value='Pull a classic meme from the archives\nUse \'s!meme arg1 arg2\' to search for memes containing those words', inline=True)
+	embed.add_field(name='meme', value='Pull a classic meme from the archives', inline=True)
 	embed.add_field(name='ratePost', value="Rates the latest post from 1-10", inline=True)
 	embed.add_field(name='rateMeme', value='Rates your meme!', inline=True)
 	embed.add_field(name='goodnight', value='Say goodnight to all your friends' + '\n\u200b', inline=True)
@@ -244,12 +244,13 @@ async def help(ctx):
 
 	embed.add_field(name='7', value='Seven Dollars', inline=True)
 	embed.add_field(name='bonk', value='Bonk', inline=True)
-	embed.add_field(name='yes', value='Posts Steve Ballmer funny sweat yes video', inline=True)
 	embed.add_field(name='bruh', value='Bruh', inline=True)
 	embed.add_field(name='bulborb', value='Posts a random bulborb', inline=True)
-	embed.add_field(name='cat', value='Posts a random warrior cats image\n Use \'s!cat arg1 arg2...\' to search for cats containing those words', inline=True)
+	embed.add_field(name='cat', value='Posts a random warrior cats image', inline=True)
 	embed.add_field(name='coin', value='Flips a coin', inline=True)
-			
+	embed.add_field(name='patch', value='Explains what new features were added in the last update', inline=True)
+	embed.add_field(name='yes', value='Posts Steve Ballmer funny sweat yes video', inline=True)	
+		
 	await ctx.send(embed=embed)
 
 #Run Bot

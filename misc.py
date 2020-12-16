@@ -198,6 +198,30 @@ class Misc(commands.Cog):
         else:
             await ctx.send("Tails")
 
+    #Patch
+    @commands.command(name='patch', help='Shows most recent updates')
+    async def patch(self, ctx):
+        embed = discord.Embed(color= 0xeeeeee)
+        
+        embed.add_field(name='Patch 12/16/20', value='-------------------------', inline=False)
+        
+        embed.add_field(name='New Commands', value='------', inline=False)
+        embed.add_field(name='s!coin', value='flips a coin, heads or tails', inline=True)
+        embed.add_field(name='s!yes', value='posts the ballmer YES gif', inline=True)
+        embed.add_field(name='s!patch', value='this command! explains the most recent changes to strombot', inline=True)
+
+        embed.add_field(name='Changes to Existing Commands', value='------', inline=False)
+        embed.add_field(name='Search Feature', value='Some commands now take extra parameters in order to narrow down the users search. Works with s!meme, s!cat, and all song commands. Example: s!meme heavy breakdown - finds any meme that contains the words heavy and breakdown somewhere in the title, case insensitive. Randomizes the result when more than one are found. Any number of parameters can be used from 0 to (as many as discord allows). Playlist searches will also generate a playlist of multiple songs following the search criteria, s!playlist xenoblade works for all you xenoblade fans', inline=False)
+        embed.add_field(name='More memes', value='s!meme now has approximately 200 more memes added in the pool, watch them all', inline=True)
+        embed.add_field(name='More bulborbs', value='s!bulborb now has more bulborbs (I didn\'t check how many but there are more!', inline=True)
+        embed.add_field(name='More dailyMemes', value='Many more daily memes were added to s!dailyMeme, memes will now randomly choose through a few memes specific to the day', inline=True)
+
+        embed.add_field(name='New Background Effects', value='------', inline=False)
+        embed.add_field(name='Post that Bryce', value='Strombot now responds to posts of \'Post that Bryce\' on a similar 5 minute timer as acrid.gif as long that gif ends in bryce.gif', inline=True)
+        embed.add_field(name='Steve Ballmer', value='Strombot now responds to posts of the Steve Ballmer YES gif similar to acrid and Bryce. Responds to the specific tenor link output by s!yes', inline=True)
+        embed.add_field(name='Always Wednesday', value='Watch out when using s!dailyMeme, you might find that a certain friend has a 5% chance of appearing even if its not Wednesday!!!!', inline=True)
+
+        await ctx.send(embed=embed)
 
 #Check if user is in a Dm 
 async def isDm(ctx):

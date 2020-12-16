@@ -85,7 +85,7 @@ class Music(commands.Cog):
 
     #Picks songs from the playlist and plays them
     @commands.command(name='playlistMeme', help='Shuffles songs from the playlist')
-    async def songsMeme(self, ctx):
+    async def songsMeme(self, ctx, *query):
         if (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
             user = ctx.message.author
             userVC = user.voice.channel
@@ -94,10 +94,24 @@ class Music(commands.Cog):
             if userVC != None:
                 channelName = userVC.name
                 voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
+
+                if (len(query)  == 0):
+                    self.bot.musicList = os.listdir('./media/mp3/playlist/memeful/')
+                else:
+                    matching = os.listdir('./media/mp3/playlist/memeful/')
+                    for arg in query:
+
+                        matching = [s for s in matching if arg.upper() in s.upper()]
+
+                    if (len(matching) == 0):
+                        await ctx.send('No results found')
+                        return
+                    else:
+                        self.bot.musicList = matching
+
                 self.bot.currentVC = await voiceChannel.connect()
 
-
-                self.bot.musicList = os.listdir('./media/mp3/playlist/memeful/')
+                #self.bot.musicList = os.listdir('./media/mp3/playlist/memeful/')
                 random.shuffle(self.bot.musicList)
                 
                 #print("in playlist Meme start")
@@ -199,7 +213,7 @@ class Music(commands.Cog):
 
     #Picks songs from the playlist and plays them
     @commands.command(name='playlist', help='Shuffles songs from the playlist without memes')
-    async def songs(self, ctx):
+    async def songs(self, ctx, *query):
         if (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
             user = ctx.message.author
             userVC = user.voice.channel
@@ -208,10 +222,26 @@ class Music(commands.Cog):
             if userVC != None:
                 channelName = userVC.name
                 voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
-                self.bot.currentVC = await voiceChannel.connect()
 
 
                 self.bot.musicList = os.listdir('./media/mp3/playlist/memeless/')
+                
+                if (len(query)  == 0):
+                    self.bot.musicList = os.listdir('./media/mp3/playlist/memeless/')
+                else:
+                    matching = os.listdir('./media/mp3/playlist/memeless/')
+                    for arg in query:
+
+                        matching = [s for s in matching if arg.upper() in s.upper()]
+
+                    if (len(matching) == 0):
+                        await ctx.send('No results found')
+                        return
+                    else:
+                        self.bot.musicList = matching
+
+                self.bot.currentVC = await voiceChannel.connect()
+
                 random.shuffle(self.bot.musicList)
 
                 randomSong = './media/mp3/playlist/memeless/' + self.bot.musicList[0]
