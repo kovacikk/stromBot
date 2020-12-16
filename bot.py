@@ -9,6 +9,7 @@ import os
 import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
+from discord.ext.commands import MissingRequiredArgument
 from dotenv import load_dotenv
 import random
 import asyncio
@@ -38,7 +39,7 @@ intents.members = True
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-bot = commands.Bot(command_prefix='s!', intents=intents)
+bot = commands.Bot(command_prefix='s!', intents=intents, case_insensitive=True)
 client = discord.Client()
 
 #ID of the Admin
@@ -62,6 +63,8 @@ async def on_command_error(ctx, error):
 	if (isinstance(error, CommandNotFound)):
 		await ctx.send("Command does not exist. That is really embarrassing " + ctx.author.display_name);
 		return
+	elif (isinstance(error, MissingRequiredArgument)):
+		await ctx.send("Missing arguments buddy, not cool " + ctx.author.display_name);		
 
 	file=open("log.txt", "a+")
 	output = str(datetime.datetime.now()) + ": " + repr(error) + "\n"; 
