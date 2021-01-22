@@ -13,7 +13,7 @@ import traceback
 
 #Import from battle.py
 import battle as bt
-
+import drive
 """
 
     Miscellaneous
@@ -79,9 +79,22 @@ class Misc(commands.Cog):
 
     #Posts a random Pikmin Meme
     @commands.command(name='bulborb', help='Posts a random bulborb')
-    async def bulborb(self, ctx):
-        bulborb = './media/bulborb/' + random.choice(os.listdir('./media/bulborb/'))
-        await ctx.send(file=discord.File(bulborb))
+    async def bulborb(self, ctx, *query):
+        if (len(query)  == 0):
+            randomMeme = './media/bulborb/' + random.choice(os.listdir('./media/bulborb/'))
+            await ctx.send(file=discord.File(randomMeme))
+        else:
+            matching = os.listdir('./media/bulborb/')
+            for arg in query:
+
+                matching = [s for s in matching if arg.upper() in s.upper()]
+
+            if (len(matching) == 0):
+                await ctx.send('No results found')
+            else:
+                randomMeme = './media/bulborb/' + random.choice(matching)
+                await ctx.send(file=discord.File(randomMeme))
+
 
     #Posts a random Warrior Cats Image
     @commands.command(name='cat',help='Posts a random warrior cats image')
@@ -198,28 +211,87 @@ class Misc(commands.Cog):
         else:
             await ctx.send("Tails")
 
+    #Dark
+    @commands.command(name = 'dark', help = 'Plays a random Dark Souls Sound')
+    async def dark(self, ctx, *query):
+        dark = ""
+        if (len(query)  == 0):
+            dark = './media/dark/' + random.choice(os.listdir('./media/dark/'))
+        else:
+            matching = os.listdir('./media/dark/')
+            for arg in query:
+
+                matching = [s for s in matching if arg.upper() in s.upper()]
+
+            if (len(matching) == 0):
+                await ctx.send('No results found')
+            else:
+                dark = './media/dark/' + random.choice(matching)
+
+        if (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
+            user = ctx.message.author
+            userVC = user.voice.channel
+
+            if userVC != None:
+                channelName = userVC.name
+                voiceChannel = discord.utils.get(ctx.guild.channels, name=channelName)
+                self.bot.currentVC = await voiceChannel.connect()
+       
+                def my_after(error):
+                    self.bot.currentVC.source.cleanup()
+                    coro = self.bot.currentVC.disconnect()
+                    fut = asyncio.run_coroutine_threadsafe(coro, self.bot.loop)
+                    try:
+                        fut.result()
+                    except:
+                        # an error happened sending the message
+                        pass    
+
+
+
+                #try:
+                self.bot.currentVC.play(discord.FFmpegPCMAudio(source=dark), after=my_after)
+                #except:
+                #return
+
+        else:
+            await playingMessage(ctx)
+
+
+    #Update
+    @commands.command(name = 'update', help = 'Downloads any new files from the google drive')
+    async def update(self, ctx):
+        await ctx.send("Searching the Google Drive ...")
+
+        message = drive.update('./media/classicMemes/', "Classic Memes");
+        await ctx.send(message)
+        
+        message = drive.update('./media/cats/', "Warrior Cats");
+        await ctx.send(message)
+        
+        message = drive.update('./media/bulborb/', "Bulborbs");
+        await ctx.send(message)
+
+
     #Patch
     @commands.command(name='patch', help='Shows most recent updates')
     async def patch(self, ctx):
         embed = discord.Embed(color= 0xeeeeee)
         
-        embed.add_field(name='Patch 12/16/20', value='-------------------------', inline=False)
+        embed.add_field(name='Patch 1/22/21', value='-------------------------', inline=False)
         
         embed.add_field(name='New Commands', value='------', inline=False)
-        embed.add_field(name='s!coin', value='flips a coin, heads or tails', inline=True)
-        embed.add_field(name='s!yes', value='posts the ballmer YES gif', inline=True)
-        embed.add_field(name='s!patch', value='this command! explains the most recent changes to strombot', inline=True)
+        embed.add_field(name='s!update', value='searches the google drive for new memes, bulborbs or cats and downloads them. Mostly created to make the process easier for me', inline=True)
+        embed.add_field(name='s!dark', value='plays some certain sounds from a popular game (Dark Souls), listen to them all! Can perform "s!dark very good" to get the exact sound you want. Could not find the prism stone sound effect anywhere actually, if someone finds it @me', inline=True)
 
         embed.add_field(name='Changes to Existing Commands', value='------', inline=False)
-        embed.add_field(name='Search Feature', value='Some commands now take extra parameters in order to narrow down the users search. Works with s!meme, s!cat, and all song commands. Example: s!meme heavy breakdown - finds any meme that contains the words heavy and breakdown somewhere in the title, case insensitive. Randomizes the result when more than one are found. Any number of parameters can be used from 0 to (as many as discord allows). Playlist searches will also generate a playlist of multiple songs following the search criteria, s!playlist xenoblade works for all you xenoblade fans', inline=False)
-        embed.add_field(name='More memes', value='s!meme now has approximately 200 more memes added in the pool, watch them all', inline=True)
-        embed.add_field(name='More bulborbs', value='s!bulborb now has more bulborbs (I didn\'t check how many but there are more!', inline=True)
-        embed.add_field(name='More dailyMemes', value='Many more daily memes were added to s!dailyMeme, memes will now randomly choose through a few memes specific to the day', inline=True)
+        embed.add_field(name='Search Feature', value='s!bulborb now has search functionality (not sure why it didn\'t. Watch though, that not all files are named', inline=False)
+        embed.add_field(name='More memes', value='s!meme now has approximately 200 more memes again!', inline=True)
+        embed.add_field(name='More bulborbs', value='s!bulborb now has a few more bulborbs. They were supposed to be added before, but some slipped through', inline=True)
+        embed.add_field(name='More dailyMemes', value='1 new Saturday meme', inline=True)
 
         embed.add_field(name='New Background Effects', value='------', inline=False)
-        embed.add_field(name='Post that Bryce', value='Strombot now responds to posts of \'Post that Bryce\' on a similar 5 minute timer as acrid.gif as long that gif ends in bryce.gif', inline=True)
-        embed.add_field(name='Steve Ballmer', value='Strombot now responds to posts of the Steve Ballmer YES gif similar to acrid and Bryce. Responds to the specific tenor link output by s!yes', inline=True)
-        embed.add_field(name='Always Wednesday', value='Watch out when using s!dailyMeme, you might find that a certain friend has a 5% chance of appearing even if its not Wednesday!!!!', inline=True)
+        embed.add_field(name='But Wait!', value='There is a special meme in s!meme that summons more memes... Be on the lookout. You might receive more than one', inline=True)
 
         await ctx.send(embed=embed)
 

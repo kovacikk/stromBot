@@ -49,8 +49,11 @@ class EverydayClassics(commands.Cog):
     @commands.command(name='meme', help='Pull a classic meme from the archives')
     async def classicMeme(self, ctx, *query):
         
+        memeName = ""
+
         if (len(query)  == 0):
-            randomMeme = './media/classicMemes/' + random.choice(os.listdir('./media/classicMemes/'))
+            memeName = random.choice(os.listdir('./media/classicMemes/'))
+            randomMeme = './media/classicMemes/' + memeName
             await ctx.send(file=discord.File(randomMeme))
         else:
             matching = os.listdir('./media/classicMemes/')
@@ -61,8 +64,12 @@ class EverydayClassics(commands.Cog):
             if (len(matching) == 0):
                 await ctx.send('No results found')
             else:
-                randomMeme = './media/classicMemes/' + random.choice(matching)
+                memeName = random.choice(matching)
+                randomMeme = './media/classicMemes/' + memeName
                 await ctx.send(file=discord.File(randomMeme))
+
+        if (memeName == "But_wait.gif"):
+            await self.classicMeme(ctx)
 
     #Posts the appropriate meme for the day
     @commands.command(name='dailyMeme', help='Posts the appropriate meme for the day')

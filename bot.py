@@ -16,11 +16,16 @@ import asyncio
 import datetime
 from datetime import timedelta
 import traceback
+import sys
+
+sys.path.insert(1, './drive/')
 
 #Import Other Files
 import music
 import classics
 import misc
+import drive
+
 
 #Encoding for Playing Music
 #import ctypes
@@ -39,7 +44,7 @@ intents.members = True
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-bot = commands.Bot(command_prefix='s!', intents=intents, case_insensitive=True)
+bot = commands.Bot(command_prefix=['s!', 'S!'], intents=intents, case_insensitive=True)
 client = discord.Client()
 
 #ID of the Admin
@@ -248,7 +253,9 @@ async def help(ctx):
 	embed.add_field(name='bulborb', value='Posts a random bulborb', inline=True)
 	embed.add_field(name='cat', value='Posts a random warrior cats image', inline=True)
 	embed.add_field(name='coin', value='Flips a coin', inline=True)
+	embed.add_field(name='dark', value='Plays a Dark Souls sound', inline = True)
 	embed.add_field(name='patch', value='Explains what new features were added in the last update', inline=True)
+	embed.add_field(name='update', value='Checks the Google Drive for new memes and downloads them', inline=True)
 	embed.add_field(name='yes', value='Posts Steve Ballmer funny sweat yes video', inline=True)	
 		
 	await ctx.send(embed=embed)
