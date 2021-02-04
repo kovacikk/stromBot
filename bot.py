@@ -284,6 +284,7 @@ async def help(ctx):
 	embed.add_field(name='coin', value='Flips a coin', inline=True)
 	embed.add_field(name='dark', value='Plays a Dark Souls sound', inline = True)
 	embed.add_field(name='patch', value='Explains what new features were added in the last update', inline=True)
+	embed.add_field(name='stat', value="Displays statistics, works with s!stat @user too!", inline = True)
 	embed.add_field(name='update', value='Checks the Google Drive for new memes and downloads them', inline=True)
 	embed.add_field(name='yes', value='Posts Steve Ballmer funny sweat yes video', inline=True)	
 		

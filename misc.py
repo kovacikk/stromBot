@@ -299,20 +299,18 @@ class Misc(commands.Cog):
     async def patch(self, ctx):
         embed = discord.Embed(color= 0xeeeeee)
         
-        embed.add_field(name='Patch 1/22/21', value='-------------------------', inline=False)
+        embed.add_field(name='Patch 2/3/21', value='-------------------------', inline=False)
         
         embed.add_field(name='New Commands', value='------', inline=False)
-        embed.add_field(name='s!update', value='searches the google drive for new memes, bulborbs or cats and downloads them. Mostly created to make the process easier for me', inline=True)
-        embed.add_field(name='s!dark', value='plays some certain sounds from a popular game (Dark Souls), listen to them all! Can perform "s!dark very good" to get the exact sound you want. Could not find the prism stone sound effect anywhere actually, if someone finds it @me', inline=True)
+        embed.add_field(name='s!stat', value='Displays server and user statistics. Use s!stat for server stats, and s!stat @user for user statistics', inline=True)
+        
+        embed.add_field(name='\u200b\nChanges to Existing Commands', value='------', inline=False)
+        embed.add_field(name='More Updating', value='s!update now updates Knuckles Rating Memes categorized into good, bad, and other', inline=False)
 
-        embed.add_field(name='Changes to Existing Commands', value='------', inline=False)
-        embed.add_field(name='Search Feature', value='s!bulborb now has search functionality (not sure why it didn\'t. Watch though, that not all files are named', inline=False)
-        embed.add_field(name='More memes', value='s!meme now has approximately 200 more memes again!', inline=True)
-        embed.add_field(name='More bulborbs', value='s!bulborb now has a few more bulborbs. They were supposed to be added before, but some slipped through', inline=True)
-        embed.add_field(name='More dailyMemes', value='1 new Saturday meme', inline=True)
+        embed.add_field(name='\u200b\nNew Background Effects', value='------', inline=False)
+        embed.add_field(name='Knuckles RateMeme', value='Knuckles now has a 40% chance of giving you a good or positive result, 40% for bad or negative, and 20% for other. Hopefully you meme will get accepted.', inline=True)
 
-        embed.add_field(name='New Background Effects', value='------', inline=False)
-        embed.add_field(name='But Wait!', value='There is a special meme in s!meme that summons more memes... Be on the lookout. You might receive more than one', inline=True)
+        embed.add_field(name='\u200b\nOther', value='I honestly changed a lot more, but I forgot what it was over the course of like 2 weeks, so sorry', inline = False)
 
         await ctx.send(embed=embed)
 
