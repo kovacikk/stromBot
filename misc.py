@@ -4,12 +4,13 @@ import os
 import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
+#from discord.ext.commands import HTTPException
 import random
 import asyncio
 import datetime
 from datetime import timedelta
 import traceback
-
+from datetime import date
 
 #Import from battle.py
 import battle as bt
@@ -26,7 +27,9 @@ class Misc(commands.Cog):
         #Tuesday at 12:00 pm
         self.bot.reginaldTime = "12:00"
         self.bot.reginaldDay = 1
-        self.bot.reginaldBool = False
+        self.bot.reginaldBool = True
+
+        self.bot.fixedDate = date(1999, 5, 7)
 
         self.bot.battleMain = None
 
@@ -81,8 +84,10 @@ class Misc(commands.Cog):
     @commands.command(name='bulborb', help='Posts a random bulborb')
     async def bulborb(self, ctx, *query):
         if (len(query)  == 0):
-            randomMeme = './media/bulborb/' + random.choice(os.listdir('./media/bulborb/'))
+            bulborbName = random.choice(os.listdir('./media/bulborb/'))
+            randomMeme = './media/bulborb/' + bulborbName
             await ctx.send(file=discord.File(randomMeme))
+            self.bot.Stat.bulborbUpdate(bulborbName)
         else:
             matching = os.listdir('./media/bulborb/')
             for arg in query:
@@ -92,8 +97,10 @@ class Misc(commands.Cog):
             if (len(matching) == 0):
                 await ctx.send('No results found')
             else:
-                randomMeme = './media/bulborb/' + random.choice(matching)
+                bulborbName =  random.choice(matching)
+                randomMeme = './media/bulborb/' + bulborbName
                 await ctx.send(file=discord.File(randomMeme))
+                self.bot.Stat.bulborbUpdate(bulborbName)
 
 
     #Posts a random Warrior Cats Image
@@ -103,8 +110,10 @@ class Misc(commands.Cog):
         #await ctx.send(file=discord.File(cat))
 
         if (len(query)  == 0):
-            cat = './media/cats/' + random.choice(os.listdir('./media/cats/'))
+            catName = random.choice(os.listdir('./media/cats/'))
+            cat = './media/cats/' + catName
             await ctx.send(file=discord.File(cat))
+            self.bot.Stat.catUpdate(catName)
         else:
             matching = os.listdir('./media/cats/')
             for arg in query:
@@ -114,8 +123,10 @@ class Misc(commands.Cog):
             if (len(matching) == 0):
                 await ctx.send('No results found')
             else:
-                cat= './media/cats/' + random.choice(matching)
+                catName = random.choice(matching)
+                cat= './media/cats/' + catName
                 await ctx.send(file=discord.File(cat))
+                self.bot.Stat.catUpdate(catName)
 
 
     #Plays the Bruh Sound
@@ -272,6 +283,16 @@ class Misc(commands.Cog):
         message = drive.update('./media/bulborb/', "Bulborbs");
         await ctx.send(message)
 
+        message = int(drive.update('./media/rateMeme/good/', "Good Rates")); 
+        message = message + int( drive.update('./media/rateMeme/bad/', "Bad Rates"));
+        message = message + int(drive.update('./media/rateMeme/other/', "Other Rates"));
+        
+        if (message == 0):
+            message = "No Knuckles Rate Memes added\n"
+        else:
+            message = "Added: Knuckles Memes: " + str(message) + "\n"
+
+        await ctx.send(message)
 
     #Patch
     @commands.command(name='patch', help='Shows most recent updates')

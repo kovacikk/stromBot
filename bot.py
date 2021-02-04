@@ -19,12 +19,14 @@ import traceback
 import sys
 
 sys.path.insert(1, './drive/')
+sys.path.insert(1, './stat/')
 
 #Import Other Files
 import music
 import classics
 import misc
 import drive
+import stats
 
 
 #Encoding for Playing Music
@@ -46,6 +48,8 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 bot = commands.Bot(command_prefix=['s!', 'S!'], intents=intents, case_insensitive=True)
 client = discord.Client()
+
+bot.Stat = stats.Stats(bot)
 
 #ID of the Admin
 bot.adminId = 170301539020308481;
@@ -95,20 +99,37 @@ async def time_check():
     while True:
         day = datetime.date.today().weekday()
         now = datetime.datetime.strftime(datetime.datetime.now(), '%H:%M')
-        if (now == bot.reginaldTime and day == bot.reginaldDay):
-            if not bot.reginaldBool:
-                await message_channel.send(file=discord.File('./media/jpg/reginald.jpg'))
-                bot.reginaldBool = True
-            else:
-                bot.reginaldBool = False
+
+        delta = (datetime.date.today() - bot.fixedDate)
+        mod = delta.days % 14
+
+        #print(now, day)
+        #Use a fixed date to find the Wednesday that shows up once every other week
+        if (now == bot.reginaldTime and mod == 12):
+            await message_channel.send(file=discord.File('./media/jpg/reginald.jpg'))
             time = 3600
-        elif (now == bot.reginaldTime and day == 2):
+        elif (now == bot.reginaldTime and mod == 13):
             ran = random.choice(range(10))
-            if ran == 0 and bot.reginaldBool:
+            if ran == 0:
                 await message_channel.send(file=discord.File('./media/jpg/reginaldBread.jpg'))
             time = 3600    
+        #Mr Crab Friday at 5
+        elif (now == "17:00" and day == 4):
+            #print('crab')
+            await message_channel.send("You guys made it to Friday, this ones on me:")
+            await message_channel.send(file=discord.File('./media/jpg/crab_friday.mp4'))
         else:
-            time = 60
+            time = 50
+
+        d = datetime.date.today().day
+        m = datetime.date.today().month
+        #Check for Birthdays
+        if (now == "12:00"):
+            bd = pandas.read_csv('./stat/birthdays.csv')
+            for index, row in bd.iterrows():
+                if (d == row['day'] and m == row['month']):
+                     await message_channel.send(row['name'] + "! Strombot thinks it is your birthday and wishes you a happy birthday!!! Everyone wish, " + row['name'] + " a happy birthday!!!")
+
         await asyncio.sleep(time)
 
 
@@ -132,6 +153,13 @@ async def on_message(ctx):
 		return
 
 	user = ctx.author.id
+
+	#Check if bot Command
+	if (ctx.content[:2] == 's!' or ctx.content[:2] == 'S!'):
+	#Store command in CSV file
+		bot.Stat.commandUpdate(user, ctx.content[2:].split(' ')[0].lower())
+		#print(ctx.content[2:].split(' ')[0])	
+
 
 
 	#Check for s!maintOn
@@ -213,6 +241,7 @@ def getBryceTime():
 bot.add_cog(music.Music(bot))
 bot.add_cog(classics.EverydayClassics(bot))
 bot.add_cog(misc.Misc(bot))
+bot.add_cog(stats.Stats(bot))
 
 bot.loop.create_task(time_check())
 

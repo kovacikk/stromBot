@@ -55,7 +55,7 @@ def update(path, name):
     service = get_gdrive_service()
 
     # Get Folder ID for Classic Memes folder
-    #results = service.files().list(q='name="Bulborbs"').execute().get('files', [])
+    #results = service.files().list(q='name="other"').execute().get('files', [])
     #for result in results:
     #    print(result.get('id'))
        
@@ -73,6 +73,12 @@ def update(path, name):
             responses = service.files().list(q='"1FRGzx9qPRdFifo-jZliFz8gx-70qZZ_G" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
         elif (name == "Bulborbs"):
             responses = service.files().list(q='"1VjkqcKJFxvXQp1yLpqtiVpcYXfZIFSFS" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Good Rates"):
+            responses = service.files().list(q='"1HdvYwYDiwmQb_IZNRh8QV6n7IYyC0a6-" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute() 
+        elif (name == "Bad Rates"):
+            responses = service.files().list(q='"1q-HBINKngi-gPmA2DFYoFGpvdxmBLz6O" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute() 
+        elif (name == "Other Rates"):
+            responses = service.files().list(q='"195zBIPW4gzksNVWlWGitGfjIrX5tmOHq" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
         else:
             return
 
@@ -144,6 +150,9 @@ def update(path, name):
         message = "No " + name + " added\n"
     else:
         message = "Added: " + name + ": " + str(yes) + "\n-------- including: " + first_added + "\n"
+
+    if name == "Good Rates" or name == "Bad Rates" or name == "Other Rates":
+        message = str(yes)
 
     return message
 

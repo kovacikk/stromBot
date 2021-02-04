@@ -1,15 +1,15 @@
 #classics.py - contains EverydayClassics class and generally useful functions 
 import os
+import shutil
 
 import discord
 from discord.ext import commands
+#from discord.ext.commands import HTTPException
 import random
 import asyncio
 import datetime
 from datetime import timedelta
 import traceback
-
-
 
 
 """
@@ -33,7 +33,14 @@ class EverydayClassics(commands.Cog):
         if (ran < 2):
             randomUserId = 159433180036726784
 
-        randomUser = ctx.message.guild.get_member(randomUserId).display_name
+        self.bot.Stat.cancelUpdate(str(randomUserId))
+
+        randomUser = ctx.message.guild.get_member(randomUserId)
+        if (randomUser != None):
+            randomUser = randomUser.display_name
+        else:
+            randomUser = str(randomUserId)
+
         response = randomUser + " is cancelled"
         await ctx.send(response)
 
@@ -54,7 +61,22 @@ class EverydayClassics(commands.Cog):
         if (len(query)  == 0):
             memeName = random.choice(os.listdir('./media/classicMemes/'))
             randomMeme = './media/classicMemes/' + memeName
-            await ctx.send(file=discord.File(randomMeme))
+            
+            message = await ctx.send("Uploading ...")
+
+            try:
+                #discord.File(randomMeme)
+                await ctx.send(file=discord.File(randomMeme))
+                await message.delete()
+            except:
+                await ctx.send(memeName + ': file is too big')
+                await message.delete()
+
+		
+
+            #Update Database
+            self.bot.Stat.memeUpdate(memeName)
+
         else:
             matching = os.listdir('./media/classicMemes/')
             for arg in query:
@@ -66,7 +88,19 @@ class EverydayClassics(commands.Cog):
             else:
                 memeName = random.choice(matching)
                 randomMeme = './media/classicMemes/' + memeName
-                await ctx.send(file=discord.File(randomMeme))
+                #await ctx.send(file=discord.File(randomMeme))
+              
+                message = await ctx.send("Uploading ...")
+ 
+                try:
+                    await ctx.send(file=discord.File(randomMeme))
+                    await message.delete()
+                except:
+                    await ctx.send(memeName + ': file is too big')
+                    await message.delete()
+ 
+                #Update Database
+                self.bot.Stat.memeUpdate(memeName)
 
         if (memeName == "But_wait.gif"):
             await self.classicMeme(ctx)
@@ -95,17 +129,59 @@ class EverydayClassics(commands.Cog):
         dayMeme = './media/dayMemes/' + dayMeme
                
         if (random.choice(range(20)) == 0):
-            await(ctx.send(file=discord.File("./media/dayMemes/wednesday/always.mp4")))
+            message = await ctx.send("Uploading ...")
+ 
+            try:
+                await(ctx.send(file=discord.File("./media/dayMemes/wednesday/always.mp4")))
+                await message.delete()
+            except:
+                await ctx.send(memeName + ': file is too big')
+                await message.delete()
         else:
-             await ctx.send(file=discord.File(dayMeme + random.choice(os.listdir(dayMeme)))) 
+            message = await ctx.send("Uploading ...")
+ 
+            try:
+                await ctx.send(file=discord.File(dayMeme + random.choice(os.listdir(dayMeme)))) 
+                await message.delete()
+            except:
+                await ctx.send(memeName + ': file is too big')
+                await message.delete()
+
+
 
 
 
     #Posts a Knuckle Video to Rate your meme
     @commands.command(name='rateMeme', help='Rates your meme!')
     async def rateMeme(self, ctx):
-        randomRate = './media/mp4/rateMeme/' + random.choice(os.listdir('./media/mp4/rateMeme/'))
-        await ctx.send(file=discord.File(randomRate))
+        #randomRate = './media/mp4/rateMeme/' + random.choice(os.listdir('./media/mp4/rateMeme/'))
+        
+        roll = random.choice(range(10))
+
+        directory = ""
+
+        #40% chance to get a good rate meme
+        if (roll <= 3):
+            directory = "./media/rateMeme/good/"
+
+        #40% chance to get a bad rate meme
+        elif (roll > 3 and roll <= 7):
+            directory = "./media/rateMeme/bad/"
+
+        #20% chance to get an other rate meme
+        else:
+            directory = "./media/rateMeme/other/"
+
+        randomRate = directory + random.choice(os.listdir(directory))
+
+        #Copy File and Rename to Obscure
+        filename, file_extension = os.path.splitext(randomRate)
+        
+        obscureFile = './media/rateMeme/KnucklesRateMeme' + file_extension
+        
+        shutil.copy(randomRate, obscureFile)
+
+        await ctx.send(file=discord.File(obscureFile))
 
     #Rates The Previous Post from 1 to 10
     @commands.command(name='ratePost', help="Rates the latest Post from 1 to 10")

@@ -62,6 +62,8 @@ class Music(commands.Cog):
                 self.bot.musicList = [randomChoice]
                 self.bot.playlist_counter = 1
 
+                self.bot.Stat.songUpdate(randomChoice)
+
                 #Disconnect from Voice Chat after Song
                 def my_after(error):
                     self.bot.musicList = None
@@ -119,7 +121,9 @@ class Music(commands.Cog):
                 #print(len(self.bot.musicList))
 
                 randomSong = './media/mp3/playlist/memeful/' + self.bot.musicList[0]
-            
+           
+                self.bot.Stat.songUpdate(self.bot.musicList[0])
+ 
                 self.bot.playlist_counter = 1
 
                 #Play next song or Disconnect from VC when finished
@@ -140,6 +144,7 @@ class Music(commands.Cog):
                         else:
                             randomSong = './media/mp3/playlist/memeful/' + self.bot.musicList[self.bot.playlist_counter]
                             self.bot.currentSong = self.bot.musicList[self.bot.playlist_counter]
+                            self.bot.Stat.songUpdate(self.bot.musicList[self.bot.playlist_counter])
                             self.bot.playlist_counter = self.bot.playlist_counter + 1
                             
                             self.bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
@@ -186,6 +191,8 @@ class Music(commands.Cog):
                         randomSong = './media/mp3/playlist/memeless/' + randomChoice
  
                 self.bot.currentVC = await voiceChannel.connect()
+
+                self.bot.Stat.songUpdate(randomChoice)
 
                 self.bot.musicList = [randomChoice]
                 self.bot.playlist_counter = 1
@@ -267,13 +274,15 @@ class Music(commands.Cog):
                             randomSong = './media/mp3/playlist/memeless/' + self.bot.musicList[self.bot.playlist_counter]
                             self.bot.currentSong = self.bot.musicList[self.bot.playlist_counter]
                             self.bot.playlist_counter = self.bot.playlist_counter + 1
-                            
+                            self.bot.Stat.songUpdate(self.bot.musicList[self.bot.playlist_counter])
                             self.bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
                             
 
                 self.bot.currentList = "memeless/"
                 self.bot.currentSong = self.bot.musicList[0]
                 
+                self.bot.Stat.songUpdate(self.bot.musicList[0])
+
                 self.bot.currentVC.play(discord.FFmpegPCMAudio(source=randomSong), after=my_after)
                 
         else:
