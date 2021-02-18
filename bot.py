@@ -17,6 +17,7 @@ import datetime
 from datetime import timedelta
 import traceback
 import sys
+import pandas
 
 sys.path.insert(1, './drive/')
 sys.path.insert(1, './stat/')
@@ -100,10 +101,16 @@ async def time_check():
         day = datetime.date.today().weekday()
         now = datetime.datetime.strftime(datetime.datetime.now(), '%H:%M')
 
+        #now = "12:00"
+
         delta = (datetime.date.today() - bot.fixedDate)
         mod = delta.days % 14
 
         #print(now, day)
+        file=open("time.txt", "a+")
+        timer = str(now) + "-" +  str(day) + "\n"
+        file.write(timer)
+        file.close()
         #Use a fixed date to find the Wednesday that shows up once every other week
         if (now == bot.reginaldTime and mod == 12):
             await message_channel.send(file=discord.File('./media/jpg/reginald.jpg'))

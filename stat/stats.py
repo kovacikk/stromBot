@@ -31,9 +31,9 @@ class Stats(commands.Cog):
 
 			active = ''
 
-			for i in range(3):
-			
-				activeUser = userData['total'].nlargest(4).index[i+1]
+			for i in range(5):
+				#print(i)	
+				activeUser = userData['total'].nlargest(6).index[i+1]
 				activeUsername = ctx.message.guild.get_member(userData.loc[activeUser, 'id'])
 
 				if (activeUsername == None):
@@ -46,10 +46,9 @@ class Stats(commands.Cog):
 
 				active = active + activeUsername + '   -->   *' + str(activeUserTotal) + '*\n'  
 
-			
-			#print(userData.loc[userData['id'] == -1, 'total']) 
-			#print(activeUsername, activeUserTotal)
-
+		
+			#print('out')
+	
 			embed.add_field(name='Total Commands:', value=str(userData.loc[userData['id'] == -1, 'total'].values[0]), inline=True)
 			embed.add_field(name='Most Active Strom-Users:', value=active, inline=True)
 
@@ -75,86 +74,125 @@ class Stats(commands.Cog):
 			embed.add_field(name='\u200b\nMost Frequent', value='---------------------', inline=False)
 
 
-			top = self.topFive(ctx, './stat/memeData.csv', 'meme')
+			top = self.topFive(ctx, './stat/memeData.csv', 'meme',0,5)
 
 			embed.add_field(name='Meme:', value=top, inline=True)
 		
-			top = self.topFive(ctx, './stat/catData.csv', 'cat')
+			top = self.topFive(ctx, './stat/catData.csv', 'cat',0,5)
 
 			embed.add_field(name='Cat:', value=top, inline=True)
 			
 			embed.add_field(name='\u200b', value='\u200b', inline=True)			
 
-			top = self.topFive(ctx, './stat/bulborbData.csv', 'bulborb')
+			top = self.topFive(ctx, './stat/bulborbData.csv', 'bulborb',0,5)
 
 			embed.add_field(name='Bulborb:', value=top, inline=True)
 
-			top = self.topFive(ctx, './stat/cancelData.csv', 'id')
+			top = self.topFive(ctx, './stat/cancelData.csv', 'id',0,5)
 		
 			embed.add_field(name='Cancel Victim:', value=top, inline=True)
 
 
 			embed.add_field(name='\u200b', value='\u200b', inline=True)
 
-			top = self.topFive(ctx, './stat/songData.csv', 'song')
+			top = self.topFive(ctx, './stat/songData.csv', 'song',0,5)
 
 			embed.add_field(name='Song:', value=top, inline=True)
 
 		
-			await ctx.send(embed = embed)
+			message = await ctx.send(embed = embed)
+			hubStat = embed
+
+			#print('yo')	
+
+			listEmbeds = []
+			listEmbeds.append(hubStat)
+			listEmbeds.append(self.getEmbeds(ctx,'user'))
+			listEmbeds.append(self.getEmbeds(ctx,'command'))
+			listEmbeds.append(self.getEmbeds(ctx,'meme'))
+			listEmbeds.append(self.getEmbeds(ctx,'cat'))
+			listEmbeds.append(self.getEmbeds(ctx,'bulborb'))
+			listEmbeds.append(self.getEmbeds(ctx,'cancel'))
+			listEmbeds.append(self.getEmbeds(ctx,'song'))
+
+			pointer = 0
+
+			#print(pointer)
+			await message.add_reaction('⬅️')
+			await message.add_reaction('➡️')
+
+			while(True):
+				reaction, user = await self.bot.wait_for('reaction_add', check=lambda reaction, user: reaction.emoji == '➡️' or reaction.emoji == '⬅️')
+				if (user == ctx.author and reaction.message == message and reaction.emoji == '➡️'):
+					pointer = pointer + 1
+					if (pointer == len(listEmbeds)):
+						pointer = 0
+									
+					await message.edit(embed = listEmbeds[pointer])
+				elif(user == ctx.author and reaction.message == message and reaction.emoji == '⬅️'):
+					pointer = pointer - 1
+					if (pointer == -1):
+						pointer = len(listEmbeds) - 1
+					await message.edit(embed = listEmbeds[pointer])
 
 		#Gets Stats of User
 		else:
-			userId = query[0]
-			#print(userId)
-			#Remove Everything but the id
-			replace = "<>!@"
-			for char in replace:
-				userId = userId.replace(char, "")
-
-			try:
-				userId = int(userId)
-			except:
-				await ctx.send('Invalid User please try again')
-				return
-
-			userData = pd.read_csv('./stat/userData.csv')
-			
-			user = userData.loc[userData['id'] == userId]
-			if user.empty:
-				await ctx.send('User not found in database')
-			else:
-				embed = discord.Embed(color = 0xeeeeee)
-				
-				activeUsername = ctx.message.guild.get_member(userId)
-
-				if (activeUsername == None):
-					activeUsername = str(userId)
-				else:
-					activeUsername = activeUsername.display_name
-
-
-
-				embed.add_field(name=activeUsername, value='--------------------', inline=False)
-				
-				field = ""
-				
-				total = {}
-				for column in userData:
-					if not (column == 'id' or column == 'total' or column =='averagerate' or column == 'sumrate'):
-						total[column] = (userData.loc[userData['id'] == userId ,column].values[0])
-
-				total = sorted(total.items(), key=lambda item: item[1])
-
-
-				for i in range(len(total)):
-					field = field + total[len(total)-i-1][0] + "   -->   *" + str(total[len(total)-i-1][1]) + '*\n'
-
-				embed.add_field(name='total = *' + str(userData.loc[userData['id'] == userId, 'total'].values[0]) + '*\n', value=field, inline=False)
+			embed = self.getEmbeds(ctx, query[0])
+			#Stat Page
+			if (embed != None):
 				await ctx.send(embed = embed)
+			#User Stat Page
+			else:
+				userId = query[0]
+				#print(userId)
+				#Remove Everything but the id
+				replace = "<>!@"
+				for char in replace:
+					userId = userId.replace(char, "")
+
+				try:
+					userId = int(userId)
+				except:
+					await ctx.send('Invalid User please try again')
+					return
+
+				userData = pd.read_csv('./stat/userData.csv')
+			
+				user = userData.loc[userData['id'] == userId]
+				if user.empty:
+					await ctx.send('User not found in database')
+				else:
+					embed = discord.Embed(color = 0xeeeeee)
+				
+					activeUsername = ctx.message.guild.get_member(userId)
+
+					if (activeUsername == None):
+						activeUsername = str(userId)
+					else:
+						activeUsername = activeUsername.display_name
+
+
+
+					embed.add_field(name=activeUsername, value='--------------------', inline=False)
+				
+					field = ""
+				
+					total = {}
+					for column in userData:
+						if not (column == 'id' or column == 'total' or column =='averagerate' or column == 'sumrate'):
+							total[column] = (userData.loc[userData['id'] == userId ,column].values[0])
+
+					total = sorted(total.items(), key=lambda item: item[1])
+
+
+					for i in range(len(total)):
+						field = field + total[len(total)-i-1][0] + "   -->   *" + str(total[len(total)-i-1][1]) + '*\n'
+
+					embed.add_field(name='total = *' + str(userData.loc[userData['id'] == userId, 'total'].values[0]) + '*\n', value=field, inline=False)
+					await ctx.send(embed = embed)
 			
 	#Helper function for Getting Top 5
-	def topFive(self, ctx, path, index): 
+	def topFive(self, ctx, path, index, lindex, rindex): 
 		top = ""
 
 		data = pd.read_csv(path)
@@ -165,8 +203,8 @@ class Stats(commands.Cog):
 
 		top5 = sorted(top5.items(), key=lambda item: item[1])
 
-		for i in range(5):
-			if (top5[len(top5)-i-1][0] == 'none'):
+		for i in range(rindex):
+			if (top5[len(top5)-i-1][0] == 'none') and (i >= lindex):
 				pass
 			elif (index == 'id'):
 				activeUsername = ctx.message.guild.get_member(int(top5[len(top5)-i-1][0]))
@@ -180,7 +218,195 @@ class Stats(commands.Cog):
 				top = top + top5[len(top5)-i-1][0] + "   -->   *" + str(top5[len(top5)-i-1][1]) + "*\n"
 		return top
 
+	#Helper function for list of data
+	def listData(self, ctx, path, index, lindex, rindex):
+		top = ""
 
+		data = pd.read_csv(path)
+		top5 = {}
+		if not data.empty:
+			for row in data.iterrows():
+				top5[row[1][index]] = int(row[1]['count'])
+
+		top5 = sorted(top5.items(), key=lambda item: item[1])
+
+		dataList = []
+		for i in range(rindex):
+			if (top5[len(top5)-i-1][0] == 'none') and (i >= lindex):
+				pass
+			elif (index == 'id'):
+				activeUsername = ctx.message.guild.get_member(int(top5[len(top5)-i-1][0]))
+				if (activeUsername == None):
+					activeUsername = str(int(top5[len(top5)-i-1][0]))
+				else:
+					activeUsername = activeUsername.display_name
+				
+				dataList.append((activeUsername,str(top5[len(top5)-i-1][1]))) 	
+				#top = top + activeUsername + "   -->   *" + str(top5[len(top5)-i-1][1]) + "*\n"
+
+			else:
+				dataList.append((top5[len(top5)-i-1][0],str(top5[len(top5)-i-1][1])))
+				#top = top + top5[len(top5)-i-1][0] + "   -->   *" + str(top5[len(top5)-i-1][1]) + "*\n"
+		return dataList
+
+	#Gets Embeds for Stat Pages
+	def getEmbeds(self, ctx, page):
+		if (page == 'user'):
+			userData = pd.read_csv('./stat/userData.csv')
+			userStat = discord.Embed(color = 0xeeeeee)	
+			
+			active = ''
+			for i in range(30):
+				#print(i)
+				#print(i, len(userData['total'].nlargest(41).index) - 1)
+				if (not (i >= len(userData['total'].nlargest(41).index) -1 )): 
+					activeUser = userData['total'].nlargest(41).index[i+1]
+					activeUsername = ctx.message.guild.get_member(userData.loc[activeUser, 'id'])
+				
+					if (activeUsername == None):
+						activeUsername = str(userData.loc[activeUser,'id'])
+					else:
+						activeUsername = activeUsername.display_name
+					activeUserTotal = userData.loc[activeUser, 'total']
+
+					active = active + activeUsername + '   -->   *' + str(activeUserTotal) + '*\n'
+			
+			userStat.add_field(name='Top 30 Users', value='-------------', inline=False)
+			userStat.add_field(name='Users', value=active, inline=False)
+
+			return userStat
+		elif(page == 'command'):
+			userData = pd.read_csv('./stat/userData.csv')
+		
+			commandStat = discord.Embed(color = 0xeeeeee)
+			commandStat.add_field(name='Commands', value='----------------', inline=False)
+
+			total = {}
+			for column in userData:
+				if not (column == 'id' or column == 'total' or column =='averagerate' or column == 'sumrate'):
+					total[column] = (userData.loc[0,column])
+			total = sorted(total.items(), key=lambda item: item[1])
+
+
+			top = ''
+			bottom = ''
+			for i in range(20):
+				top = top + str(i+1) + ": " +  total[len(total)-i-1][0] + "   -->   *" + str(total[len(total)-i-1][1]) + "*\n"			
+				bottom = bottom + str(i+1) + ": " +  total[i][0] + "   -->   *" + str(total[i][1]) + "*\n"
+
+			commandStat.add_field(name='Top Commands', value=top)
+			commandStat.add_field(name='Bottom Commands', value=bottom)
+
+			return commandStat
+		elif(page == 'meme'):
+			memeStat = discord.Embed(color = 0xeeeeee)
+			#memeStat.add_field(name='Most Used Memes', value='----------------', inline=False)
+			memeList = self.listData(ctx, './stat/memeData.csv', 'meme', 0, 30)
+			counter = 0
+			value = ''
+			for name, count in memeList:
+				counter = counter + 1
+				newEntry = str(counter) + ': ' + name + "   -->   *" + count + "*\n"
+				if (len(value) + len(newEntry) > 1024) or ((counter > 2) and ((counter-1)%10 == 0)) :
+					if (counter <= 11):
+						memeStat.add_field(name='Top 30 Memes\n-------------------', value=value,inline=False)
+					else:
+						memeStat.add_field(name='-----', value=value,inline=False)
+
+					value = ''
+
+				value = value + newEntry
+	
+			memeStat.add_field(name='-----', value=value,inline=False)
+
+			return memeStat
+		elif(page == 'cat'):
+			catStat = discord.Embed(color = 0xeeeeee)
+			#catStat.add_field(name='Most Used Cats', value='---------------', inline=False)
+			catList = self.listData(ctx, './stat/catData.csv', 'cat', 0, 30)
+			counter = 0
+			value = ''
+			for name, count in catList:
+				counter = counter + 1
+				newEntry = str(counter) + ': ' + name + "   -->   *" + count + "*\n"	
+				if (len(value) + len(newEntry) > 1024) or ((counter > 2) and ((counter-1)%10 == 0)):
+					if (counter <= 11):
+						catStat.add_field(name='Most Used Cats\n-------------------', value=value,inline=False)
+					else:
+						catStat.add_field(name='-----', value=value,inline=False)
+
+					value = ''
+
+				value = value + newEntry
+	
+			catStat.add_field(name='-----', value=value,inline=False)
+
+			return catStat
+		elif(page == 'bulborb'):
+			bulborbStat = discord.Embed(color = 0xeeeeee)
+			#bulborbStat.add_field(name='Most Used Bulborb', value='---------------', inline=False)
+			bulborbList = self.listData(ctx, './stat/bulborbData.csv', 'bulborb', 0, 30)
+			counter = 0
+			value = ''
+			for name, count in bulborbList:
+				counter = counter + 1
+				newEntry = str(counter) + ': ' + name + "   -->   *" + count + "*\n"	
+				if (len(value) + len(newEntry) > 1024) or ((counter > 2) and ((counter-1)%10 == 0)):
+					if (counter <= 11):
+						bulborbStat.add_field(name='Most Used Bulborb\n-------------------', value=value,inline=False)
+					else:
+						bulborbStat.add_field(name='-----', value=value,inline=False)	
+					value = ''
+
+				value = value + newEntry
+	
+			bulborbStat.add_field(name='-----', value=value,inline=False)
+
+			return bulborbStat
+		elif(page == 'cancel'):
+			cancelStat = discord.Embed(color = 0xeeeeee)
+			#cancelStat.add_field(name='Most Used Cancel Victims', value='---------------', inline=False)
+			cancelList = self.listData(ctx, './stat/cancelData.csv', 'id', 0, 30)
+			counter = 0
+			value = ''
+			for name, count in cancelList:
+				counter = counter + 1
+				newEntry = str(counter) + ': ' + name + "   -->   *" + count + "*\n"	
+				if (len(value) + len(newEntry) > 1024) or ((counter > 2) and ((counter-1)%10 == 0)):
+					if (counter <= 11):
+						cancelStat.add_field(name='Most Canceled Victims\n-------------------', value=value,inline=False)
+					else:
+						cancelStat.add_field(name='-----', value=value,inline=False)
+					value = ''
+
+				value = value + newEntry
+	
+			cancelStat.add_field(name='-----', value=value,inline=False)
+		
+			return cancelStat
+		elif(page == 'song'):
+			songStat = discord.Embed(color = 0xeeeeee)
+			#songStat.add_field(name='Most Played Songs', value='---------------', inline=False)
+			songList = self.listData(ctx, './stat/songData.csv', 'song', 0, 30)
+			counter = 0
+			value = ''
+			for name, count in songList:
+				counter = counter + 1
+				newEntry = str(counter) + ': ' + name + "   -->   *" + count + "*\n"	
+				if (len(value) + len(newEntry) > 1024) or ((counter > 2) and ((counter-1)%10 == 0)):
+					if (counter <= 11):
+						songStat.add_field(name='Most Played Songs\n-------------------', value=value,inline=False)
+					else:
+						songStat.add_field(name='-----', value=value,inline=False)
+					value = ''
+
+				value = value + newEntry
+	
+			songStat.add_field(name='-----', value=value,inline=False)
+
+			return songStat	
+		else:
+			return None
 	
 	#Updates User and Total Commands Data
 	def commandUpdate(self, userId, command):
