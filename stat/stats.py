@@ -279,7 +279,7 @@ class Stats(commands.Cog):
 			userData = pd.read_csv('./stat/userData.csv')
 		
 			commandStat = discord.Embed(color = 0xeeeeee)
-			commandStat.add_field(name='Commands', value='----------------', inline=False)
+			commandStat.add_field(name='Top 20 and Bottom 20 Commands', value='----------------', inline=False)
 
 			total = {}
 			for column in userData:
@@ -331,7 +331,7 @@ class Stats(commands.Cog):
 				newEntry = str(counter) + ': ' + name + "   -->   *" + count + "*\n"	
 				if (len(value) + len(newEntry) > 1024) or ((counter > 2) and ((counter-1)%10 == 0)):
 					if (counter <= 11):
-						catStat.add_field(name='Most Used Cats\n-------------------', value=value,inline=False)
+						catStat.add_field(name='Top 30 Cats\n-------------------', value=value,inline=False)
 					else:
 						catStat.add_field(name='-----', value=value,inline=False)
 
@@ -353,7 +353,7 @@ class Stats(commands.Cog):
 				newEntry = str(counter) + ': ' + name + "   -->   *" + count + "*\n"	
 				if (len(value) + len(newEntry) > 1024) or ((counter > 2) and ((counter-1)%10 == 0)):
 					if (counter <= 11):
-						bulborbStat.add_field(name='Most Used Bulborb\n-------------------', value=value,inline=False)
+						bulborbStat.add_field(name='Top 30 Bulborbs\n-------------------', value=value,inline=False)
 					else:
 						bulborbStat.add_field(name='-----', value=value,inline=False)	
 					value = ''
@@ -374,7 +374,7 @@ class Stats(commands.Cog):
 				newEntry = str(counter) + ': ' + name + "   -->   *" + count + "*\n"	
 				if (len(value) + len(newEntry) > 1024) or ((counter > 2) and ((counter-1)%10 == 0)):
 					if (counter <= 11):
-						cancelStat.add_field(name='Most Canceled Victims\n-------------------', value=value,inline=False)
+						cancelStat.add_field(name='Top 30 Victims\n-------------------', value=value,inline=False)
 					else:
 						cancelStat.add_field(name='-----', value=value,inline=False)
 					value = ''
@@ -395,7 +395,7 @@ class Stats(commands.Cog):
 				newEntry = str(counter) + ': ' + name + "   -->   *" + count + "*\n"	
 				if (len(value) + len(newEntry) > 1024) or ((counter > 2) and ((counter-1)%10 == 0)):
 					if (counter <= 11):
-						songStat.add_field(name='Most Played Songs\n-------------------', value=value,inline=False)
+						songStat.add_field(name='Top 30 Songs\n-------------------', value=value,inline=False)
 					else:
 						songStat.add_field(name='-----', value=value,inline=False)
 					value = ''

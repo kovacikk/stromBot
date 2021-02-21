@@ -28,7 +28,7 @@ import classics
 import misc
 import drive
 import stats
-
+import utils
 
 #Encoding for Playing Music
 #import ctypes
@@ -107,10 +107,6 @@ async def time_check():
         mod = delta.days % 14
 
         #print(now, day)
-        file=open("time.txt", "a+")
-        timer = str(now) + "-" +  str(day) + "\n"
-        file.write(timer)
-        file.close()
         #Use a fixed date to find the Wednesday that shows up once every other week
         if (now == bot.reginaldTime and mod == 12):
             await message_channel.send(file=discord.File('./media/jpg/reginald.jpg'))

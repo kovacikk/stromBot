@@ -15,6 +15,7 @@ from datetime import date
 #Import from battle.py
 import battle as bt
 import drive
+from utils import reactList
 """
 
     Miscellaneous
@@ -90,17 +91,24 @@ class Misc(commands.Cog):
             self.bot.Stat.bulborbUpdate(bulborbName)
         else:
             matching = os.listdir('./media/bulborb/')
+            
+            listBool = False
             for arg in query:
-
-                matching = [s for s in matching if arg.upper() in s.upper()]
+                if (arg == '-l'):
+                    listBool = True
+                else:
+                    matching = [s for s in matching if arg.upper() in s.upper()]
 
             if (len(matching) == 0):
                 await ctx.send('No results found')
             else:
-                bulborbName =  random.choice(matching)
-                randomMeme = './media/bulborb/' + bulborbName
-                await ctx.send(file=discord.File(randomMeme))
-                self.bot.Stat.bulborbUpdate(bulborbName)
+                if (not listBool):
+                    bulborbName =  random.choice(matching)
+                    randomMeme = './media/bulborb/' + bulborbName
+                    await ctx.send(file=discord.File(randomMeme))
+                    self.bot.Stat.bulborbUpdate(bulborbName)
+                else:
+                    await reactList(ctx, self.bot, query, matching)
 
 
     #Posts a random Warrior Cats Image
@@ -116,18 +124,24 @@ class Misc(commands.Cog):
             self.bot.Stat.catUpdate(catName)
         else:
             matching = os.listdir('./media/cats/')
+            
+            listBool = False
             for arg in query:
-
-                matching = [s for s in matching if arg.upper() in s.upper()]
+                if (arg == '-l'):
+                    listBool = True
+                else:
+                    matching = [s for s in matching if arg.upper() in s.upper()]
 
             if (len(matching) == 0):
                 await ctx.send('No results found')
             else:
-                catName = random.choice(matching)
-                cat= './media/cats/' + catName
-                await ctx.send(file=discord.File(cat))
-                self.bot.Stat.catUpdate(catName)
-
+                if (not listBool):
+                    catName = random.choice(matching)
+                    cat= './media/cats/' + catName
+                    await ctx.send(file=discord.File(cat))
+                    self.bot.Stat.catUpdate(catName)
+                else:
+                    await reactList(ctx, self.bot, query, matching)
 
     #Plays the Bruh Sound
     @commands.command(name='bruh', help='Bruh')

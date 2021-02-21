@@ -8,7 +8,7 @@ import random
 import asyncio
 
 import traceback
-
+from utils import reactList
 
 
 """
@@ -29,7 +29,23 @@ class Music(commands.Cog):
     #Picks a song from the playlist and plays it
     @commands.command(name='songMeme', help='Play a random song from the playlist')
     async def songMeme(self, ctx, *query):
-        if (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
+        listBool = False
+        for arg in query:
+            if (arg == '-l'):
+                listBool = True
+
+        if(listBool):
+             matching = os.listdir('./media/mp3/playlist/memeful/')
+             for arg in query:
+                 if not (arg == '-l'):
+                     matching = [s for s in matching if arg.upper() in s.upper()]
+
+             if (len(matching) == 0):
+                 await ctx.send('No results found')
+                 return
+             else:
+                 await reactList(ctx, self.bot, query, matching) 
+        elif (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
             user = ctx.message.author
             userVC = user.voice.channel
 
@@ -46,16 +62,23 @@ class Music(commands.Cog):
                     randomSong = './media/mp3/playlist/memeful/' + randomChoice
                 else:
                     matching = os.listdir('./media/mp3/playlist/memeful/')
+                    
+                    listBool = False
                     for arg in query:
-
-                        matching = [s for s in matching if arg.upper() in s.upper()]
+                        if (arg == '-l'):
+                            listBool = True
+                        else:
+                            matching = [s for s in matching if arg.upper() in s.upper()]
 
                     if (len(matching) == 0):
                         await ctx.send('No results found')
                         return
                     else:
-                        randomChoice =  random.choice(matching)
-                        randomSong = './media/mp3/playlist/memeful/' + randomChoice
+                        if (not listBool):
+                            randomChoice =  random.choice(matching)
+                            randomSong = './media/mp3/playlist/memeful/' + randomChoice
+                        else:
+                            await reactList(ctx, self.bot, query, matching)
                 
                 self.bot.currentVC = await voiceChannel.connect()
 
@@ -88,10 +111,26 @@ class Music(commands.Cog):
     #Picks songs from the playlist and plays them
     @commands.command(name='playlistMeme', help='Shuffles songs from the playlist')
     async def songsMeme(self, ctx, *query):
-        if (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
+        listBool = False
+        for arg in query:
+            if (arg == '-l'):
+                listBool = True
+
+        if(listBool):
+             matching = os.listdir('./media/mp3/playlist/memeful/')
+             for arg in query:
+                 if not (arg == '-l'):
+                     matching = [s for s in matching if arg.upper() in s.upper()]
+
+             if (len(matching) == 0):
+                 await ctx.send('No results found')
+                 return
+             else:
+                 await reactList(ctx, self.bot, query, matching) 
+        elif (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
             user = ctx.message.author
             userVC = user.voice.channel
-            
+ 
             #Check if user is in Voice Chat
             if userVC != None:
                 channelName = userVC.name
@@ -101,15 +140,23 @@ class Music(commands.Cog):
                     self.bot.musicList = os.listdir('./media/mp3/playlist/memeful/')
                 else:
                     matching = os.listdir('./media/mp3/playlist/memeful/')
+                    
+                    listBool = False
                     for arg in query:
-
-                        matching = [s for s in matching if arg.upper() in s.upper()]
+                        if (arg == '-l'):
+                            listBool = True
+                        else:
+                            matching = [s for s in matching if arg.upper() in s.upper()]
 
                     if (len(matching) == 0):
                         await ctx.send('No results found')
                         return
                     else:
-                        self.bot.musicList = matching
+                        if (not listBool):
+                            self.bot.musicList = matching
+                        else:
+                            await reactList(ctx, self.bot, query, matching)
+                            return
 
                 self.bot.currentVC = await voiceChannel.connect()
 
@@ -162,7 +209,23 @@ class Music(commands.Cog):
     #Picks a song from the playlist and plays it
     @commands.command(name='song', help='Play a random song from the playlist without memes')
     async def song(self, ctx, *query):
-        if (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
+        listBool = False
+        for arg in query:
+            if (arg == '-l'):
+                listBool = True
+
+        if(listBool):
+             matching = os.listdir('./media/mp3/playlist/memeless/')
+             for arg in query:
+                 if not (arg == '-l'):
+                     matching = [s for s in matching if arg.upper() in s.upper()]
+
+             if (len(matching) == 0):
+                 await ctx.send('No results found')
+                 return
+             else:
+                 await reactList(ctx, self.bot, query, matching) 
+        elif (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
             user = ctx.message.author
             userVC = user.voice.channel
 
@@ -179,17 +242,23 @@ class Music(commands.Cog):
                     randomSong = './media/mp3/playlist/memeless/' + randomChoice
                 else:
                     matching = os.listdir('./media/mp3/playlist/memeless/')
+                    listBool = False
                     for arg in query:
-
-                        matching = [s for s in matching if arg.upper() in s.upper()]
+                        if (arg == '-l'):
+                            listBool = True
+                        else:
+                            matching = [s for s in matching if arg.upper() in s.upper()]
 
                     if (len(matching) == 0):
                         await ctx.send('No results found')
                         return
                     else:
-                        randomChoice = random.choice(matching)
-                        randomSong = './media/mp3/playlist/memeless/' + randomChoice
- 
+                        if (not listBool):
+                            randomChoice = random.choice(matching)
+                            randomSong = './media/mp3/playlist/memeless/' + randomChoice
+                        else:
+                            await reactList(ctx, self.bot, query, matching) 
+
                 self.bot.currentVC = await voiceChannel.connect()
 
                 self.bot.Stat.songUpdate(randomChoice)
@@ -221,6 +290,22 @@ class Music(commands.Cog):
     #Picks songs from the playlist and plays them
     @commands.command(name='playlist', help='Shuffles songs from the playlist without memes')
     async def songs(self, ctx, *query):
+        listBool = False
+        for arg in query:
+            if (arg == '-l'):
+                listBool = True
+
+        if(listBool):
+             matching = os.listdir('./media/mp3/playlist/memeless/')
+             for arg in query:
+                 if not (arg == '-l'):
+                     matching = [s for s in matching if arg.upper() in s.upper()]
+
+             if (len(matching) == 0):
+                 await ctx.send('No results found')
+                 return
+             else:
+                 await reactList(ctx, self.bot, query, matching) 
         if (self.bot.currentVC == None or not self.bot.currentVC.is_playing()):
             user = ctx.message.author
             userVC = user.voice.channel
@@ -237,15 +322,21 @@ class Music(commands.Cog):
                     self.bot.musicList = os.listdir('./media/mp3/playlist/memeless/')
                 else:
                     matching = os.listdir('./media/mp3/playlist/memeless/')
+                    listBool = False
                     for arg in query:
-
-                        matching = [s for s in matching if arg.upper() in s.upper()]
+                        if (arg == '-l'):
+                            listBool = True
+                        else:
+                            matching = [s for s in matching if arg.upper() in s.upper()]
 
                     if (len(matching) == 0):
                         await ctx.send('No results found')
                         return
                     else:
-                        self.bot.musicList = matching
+                        if (not listBool):
+                            self.bot.musicList = matching
+                        else:
+                            await reactList(ctx, self.bot, query, matching)
 
                 self.bot.currentVC = await voiceChannel.connect()
 
