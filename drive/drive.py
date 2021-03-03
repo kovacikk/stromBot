@@ -49,7 +49,7 @@ def get_gdrive_service():
 # Looks for and downloads memes from the google drive not in the local folders
 # Updates Folder found in PATH, using the folder with the NAME in the google drive
 #
-def update(path, name):
+async def update(path, name, messageStart, message, post):
     #Update Classic Memes
 
     service = get_gdrive_service()
@@ -113,6 +113,10 @@ def update(path, name):
     #print("Adding Classic Memes")
     #ctx.send("Adding Classic Memes")
     
+    count = 0
+    for meme in difference:
+        if meme in driveMeme:
+            count = count + 1
 
     first_added = ""
 
@@ -138,7 +142,18 @@ def update(path, name):
             fh.seek(0)
             with open(path + meme, 'wb') as f:
                 shutil.copyfileobj(fh, f, length=131072)
-         
+            
+            percent = int((float(yes) / float(count)) * 20)
+            bar = '|'
+            for square in range(percent):
+                bar = bar + '■'
+
+            for square in range(20 - percent):
+                bar = bar + '□'
+
+            bar = bar + '|\n'
+
+            await post.edit(content = messageStart + bar + '-----------------------------------\n' + message)
 
         # Memes not yet added to drive
         else:

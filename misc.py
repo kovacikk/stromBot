@@ -287,27 +287,41 @@ class Misc(commands.Cog):
     #Update
     @commands.command(name = 'update', help = 'Downloads any new files from the google drive')
     async def update(self, ctx):
-        await ctx.send("Searching the Google Drive ...")
+        messageStart = "Searching the Google Drive ...\n-----------------------------------\n"
+        post = await ctx.send(messageStart)
 
-        message = drive.update('./media/classicMemes/', "Classic Memes");
-        await ctx.send(message)
+        message = ''
+        memeUpdate = await drive.update('./media/classicMemes/', "Classic Memes", messageStart, message, post);
+        if not (memeUpdate[:2] == 'No'):
+            message = message + memeUpdate	
+            await post.edit(content = messageStart + message)
         
-        message = drive.update('./media/cats/', "Warrior Cats");
-        await ctx.send(message)
         
-        message = drive.update('./media/bulborb/', "Bulborbs");
-        await ctx.send(message)
 
-        message = int(drive.update('./media/rateMeme/good/', "Good Rates")); 
-        message = message + int( drive.update('./media/rateMeme/bad/', "Bad Rates"));
-        message = message + int(drive.update('./media/rateMeme/other/', "Other Rates"));
-        
-        if (message == 0):
-            message = "No Knuckles Rate Memes added\n"
-        else:
-            message = "Added: Knuckles Memes: " + str(message) + "\n"
+        catUpdate = await drive.update('./media/cats/', "Warrior Cats", messageStart, message, post);
+        if not (catUpdate[:2] == 'No'):
+            message = message + catUpdate	
+            await post.edit(content = messageStart + message)
 
-        await ctx.send(message)
+
+        bulborbUpdate = await drive.update('./media/bulborb/', "Bulborbs", messageStart, message, post);
+        if not (bulborbUpdate[:2] == 'No'):
+            message = message + bulborbUpdate	
+            await post.edit(content = messageStart + message)
+
+
+        knuckSum = int(await drive.update('./media/rateMeme/good/', "Good Rates", messageStart, message, post)); 
+        knuckSum = knuckSum + int(await drive.update('./media/rateMeme/bad/', "Bad Rates", messageStart, message, post));
+        knuckSum = knuckSum + int(await drive.update('./media/rateMeme/other/', "Other Rates", messageStart, message, post));
+        
+        if not (knuckSum == 0):
+            message = message + "Added: Knuckles Memes: " + str(knuckSum) + "\n"
+            await post.edit(content = messageStart + message)
+
+        if message == '':
+            message = 'No New Content Found'
+
+        await post.edit(content = message)
 
     #Patch
     @commands.command(name='patch', help='Shows most recent updates')
