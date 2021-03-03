@@ -287,11 +287,12 @@ class Misc(commands.Cog):
     #Update
     @commands.command(name = 'update', help = 'Downloads any new files from the google drive')
     async def update(self, ctx):
-        messageStart = "Searching the Google Drive ...\n-----------------------------------\n"
+        messageStart = "Searching the Google Drive\n-----------------------------------\n"
         post = await ctx.send(messageStart)
 
         message = ''
         memeUpdate = await drive.update('./media/classicMemes/', "Classic Memes", messageStart, message, post);
+        messageStart = "Searching the Google Drive .\n-----------------------------------\n"
         if not (memeUpdate[:2] == 'No'):
             message = message + memeUpdate	
             await post.edit(content = messageStart + message)
@@ -299,12 +300,14 @@ class Misc(commands.Cog):
         
 
         catUpdate = await drive.update('./media/cats/', "Warrior Cats", messageStart, message, post);
+        messageStart = "Searching the Google Drive ..\n-----------------------------------\n"
         if not (catUpdate[:2] == 'No'):
             message = message + catUpdate	
             await post.edit(content = messageStart + message)
 
 
         bulborbUpdate = await drive.update('./media/bulborb/', "Bulborbs", messageStart, message, post);
+        messageStart = "Searching the Google Drive ...\n-----------------------------------\n"
         if not (bulborbUpdate[:2] == 'No'):
             message = message + bulborbUpdate	
             await post.edit(content = messageStart + message)
@@ -314,6 +317,7 @@ class Misc(commands.Cog):
         knuckSum = knuckSum + int(await drive.update('./media/rateMeme/bad/', "Bad Rates", messageStart, message, post));
         knuckSum = knuckSum + int(await drive.update('./media/rateMeme/other/', "Other Rates", messageStart, message, post));
         
+        messageStart = "Searching the Google Drive ....\n-----------------------------------\n"
         if not (knuckSum == 0):
             message = message + "Added: Knuckles Memes: " + str(knuckSum) + "\n"
             await post.edit(content = messageStart + message)
