@@ -51,15 +51,18 @@ def get_gdrive_service():
 #
 async def update(path, name, messageStart, message, post):
     #Update Classic Memes
-
     service = get_gdrive_service()
 
     # Get Folder ID for Classic Memes folder
-    #results = service.files().list(q='name="other"').execute().get('files', [])
-    #for result in results:
-    #    print(result.get('id'))
-       
- 
+    """
+    results = service.files().list(q='name="Kek"').execute().get('files', [])
+    for result in results:
+        print(result.get('id'))
+    results = service.files().list(q='name="Cringe"').execute().get('files', [])
+    for result in results:
+        print(result.get('id'))      
+    """ 
+
     driveMeme = []
     driveDict = {} 
 
@@ -79,6 +82,10 @@ async def update(path, name, messageStart, message, post):
             responses = service.files().list(q='"1q-HBINKngi-gPmA2DFYoFGpvdxmBLz6O" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute() 
         elif (name == "Other Rates"):
             responses = service.files().list(q='"195zBIPW4gzksNVWlWGitGfjIrX5tmOHq" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Kek"):
+            responses = service.files().list(q='"1KDflBiAeRAlMS6wM3-8vDbp0XSBMdwee" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Cringe"):
+            responses = service.files().list(q='"1K8o0r-LtNTt0A-zIZh_juqmMUVjNLZ64" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
         else:
             return
 
@@ -97,8 +104,6 @@ async def update(path, name, messageStart, message, post):
             break
 
     driveMeme.sort()
-
-
 
     # Get Memes currently in bot
     localMeme = os.listdir(path)
@@ -166,7 +171,7 @@ async def update(path, name, messageStart, message, post):
     else:
         message = "Added: " + name + ": " + str(yes) + "\n-------- including: " + first_added + "\n"
 
-    if name == "Good Rates" or name == "Bad Rates" or name == "Other Rates":
+    if name == "Good Rates" or name == "Bad Rates" or name == "Other Rates" or name == "Kek" or name == "Cringe":
         message = str(yes)
 
     return message

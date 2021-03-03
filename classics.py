@@ -230,3 +230,92 @@ class EverydayClassics(commands.Cog):
         
         await ctx.send(message)
 
+    #Says the message is kek
+    @commands.command(name='kek', help="Posts a kek response meme")
+    async def kek(self, ctx, *query):
+        if (len(query) == 0):
+            memeName = random.choice(os.listdir('./media/kekOrCringe/kek/'))
+            randomMeme = './media/kekOrCringe/kek/' + memeName
+
+            message = await ctx.send("Uploading ...")
+ 
+            try:
+                await ctx.send(file=discord.File(randomMeme))
+                await message.delete()
+            except:
+                await ctx.send(memeName + ': file is too big')
+                await message.delete()
+        else:
+            matching = os.listdir('./media/kekOrCringe/kek/')
+            
+            listBool = False
+            for arg in query:
+                if (arg == '-l'):
+                    listBool = True
+                else:
+                    matching = [s for s in matching if arg.upper() in s.upper()]
+
+            if (len(matching) == 0):
+                await ctx.send('No results found')
+            else:
+                if (not listBool):
+                    memeName = random.choice(matching)
+                    randomMeme = './media/kekOrCringe/kek/' + memeName
+                    #await ctx.send(file=discord.File(randomMeme))
+              
+                    message = await ctx.send("Uploading ...")
+ 
+                    try:
+                        await ctx.send(file=discord.File(randomMeme))
+                        await message.delete()
+                    except:
+                        await ctx.send(memeName + ': file is too big')
+                        await message.delete()
+ 
+                else:
+                    await reactList(ctx, self.bot, query, matching)
+
+    #Says the message above is cringe
+    @commands.command(name='cringe', help="Posts a cringe response meme")
+    async def cringe(self, ctx, *query):
+        if (len(query) == 0):
+            memeName = random.choice(os.listdir('./media/kekOrCringe/cringe/'))
+            randomMeme = './media/kekOrCringe/cringe/' + memeName
+            
+            message = await ctx.send("Uploading ...")
+ 
+            try:
+                await ctx.send(file=discord.File(randomMeme))
+                await message.delete()
+            except:
+                await ctx.send(memeName + ': file is too big')
+                await message.delete()
+        else:
+            matching = os.listdir('./media/kekOrCringe/cringe/')
+            
+            listBool = False
+            for arg in query:
+                if (arg == '-l'):
+                    listBool = True
+                else:
+                    matching = [s for s in matching if arg.upper() in s.upper()]
+
+            if (len(matching) == 0):
+                await ctx.send('No results found')
+            else:
+                if (not listBool):
+                    memeName = random.choice(matching)
+                    randomMeme = './media/kekOrCringe/cringe/' + memeName
+                    #await ctx.send(file=discord.File(randomMeme))
+              
+                    message = await ctx.send("Uploading ...")
+ 
+                    try:
+                        await ctx.send(file=discord.File(randomMeme))
+                        await message.delete()
+                    except:
+                        await ctx.send(memeName + ': file is too big')
+                        await message.delete()
+ 
+                else:
+                    await reactList(ctx, self.bot, query, matching)

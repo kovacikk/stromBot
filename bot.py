@@ -272,18 +272,10 @@ async def help(ctx):
 	embed.add_field(name='meme', value='Pull a classic meme from the archives', inline=True)
 	embed.add_field(name='ratePost', value="Rates the latest post from 1-10", inline=True)
 	embed.add_field(name='rateMeme', value='Rates your meme!', inline=True)
-	embed.add_field(name='goodnight', value='Say goodnight to all your friends' + '\n\u200b', inline=True)
+	embed.add_field(name='goodnight', value='Say goodnight to all your friends', inline=True)
 
-	
-	embed.add_field(name='Music', value='--------------------', inline=False);
-	
-	embed.add_field(name='song', value='Play a random song from the playlist without memes', inline=True)
-	embed.add_field(name='songMeme', value='Play a random song from the playlist with memes', inline=True)
-	embed.add_field(name='playlist', value='Shuffles songs from the playlist without memes', inline=True)	
-	embed.add_field(name='playlistMeme', value='Shuffles songs from the playlist with memes', inline=True)
-	embed.add_field(name='playing', value='Tells what song is currently playing', inline=True)
-	embed.add_field(name='skip', value='Skips currently playing song', inline=True)
-	embed.add_field(name='stop', value='Stops currently playing songs or clips' + '\n\u200b', inline=True)
+	embed.add_field(name='kek', value='Displays a video in favor of another post', inline=True)
+	embed.add_field(name='cringe', value='Displays a video in horror of another post' + '\n\u200b', inline=True)
 
 
 	embed.add_field(name='Miscellaneous', value='--------------------', inline=False)
@@ -295,11 +287,56 @@ async def help(ctx):
 	embed.add_field(name='cat', value='Posts a random warrior cats image', inline=True)
 	embed.add_field(name='coin', value='Flips a coin', inline=True)
 	embed.add_field(name='dark', value='Plays a Dark Souls sound', inline = True)
-	embed.add_field(name='patch', value='Explains what new features were added in the last update', inline=True)
-	embed.add_field(name='stat', value="Displays statistics, works with s!stat @user too!", inline = True)
-	embed.add_field(name='update', value='Checks the Google Drive for new memes and downloads them', inline=True)
-	embed.add_field(name='yes', value='Posts Steve Ballmer funny sweat yes video', inline=True)	
+	embed.add_field(name='yes', value='Posts Steve Ballmer funny sweat yes video' + '\n\u200b', inline=True)	
 	#embed.add_field(name='test', value="this is kinda weird [test](www.google.com)", inline=True)	
+
+	
+	embed.add_field(name='Bot Activities', value='--------------------', inline=False);
+
+	embed.add_field(name='help', value='This page, displays Strombot commands', inline=True)
+	embed.add_field(name='stat', value="Displays statistics, works with s!stat @user too!", inline = True)
+	embed.add_field(name='patch', value='Explains what new features were added in the last update', inline=True)
+	embed.add_field(name='update', value='Checks the Google Drive for new memes and downloads them', inline=True)
+
+
+	musicEmbed = discord.Embed(color = 0xeeeeee)
+	musicEmbed.add_field(name='Music', value='--------------------', inline=False);
+	
+	musicEmbed.add_field(name='song', value='Play a random song from the playlist without memes', inline=True)
+	musicEmbed.add_field(name='songMeme', value='Play a random song from the playlist with memes', inline=True)
+	musicEmbed.add_field(name='playlist', value='Shuffles songs from the playlist without memes', inline=True)	
+	musicEmbed.add_field(name='playlistMeme', value='Shuffles songs from the playlist with memes', inline=True)
+	musicEmbed.add_field(name='playing', value='Tells what song is currently playing', inline=True)
+	musicEmbed.add_field(name='skip', value='Skips currently playing song', inline=True)
+	musicEmbed.add_field(name='stop', value='Stops currently playing songs or clips' + '\n\u200b', inline=True)
+
+	message = await ctx.send(embed = embed)
+
+	listEmbeds = []
+	listEmbeds.append(embed)
+	listEmbeds.append(musicEmbed)
+
+	pointer = 0
+
+	await message.add_reaction('⬅️')
+	await message.add_reaction('➡️')
+
+	while(True):
+		reaction, user = await bot.wait_for('reaction_add', check=lambda reaction, user: reaction.emoji == '➡️' or reaction.emoji == '⬅️')
+		if (user == ctx.author and reaction.message == message and reaction.emoji == '➡️'):
+			pointer = pointer + 1
+			if (pointer == len(listEmbeds)):
+				pointer = 0
+
+			await message.edit(embed = listEmbeds[pointer])
+		elif(user == ctx.author and reaction.message == message and reaction.emoji == '⬅️'):
+			pointer = pointer - 1
+			if (pointer == -1):
+				pointer = len(listEmbeds) - 1
+			await message.edit(embed = listEmbeds[pointer])
+
+
+	
 	await ctx.send(embed=embed)
 
 #Run Bot

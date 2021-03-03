@@ -287,43 +287,61 @@ class Misc(commands.Cog):
     #Update
     @commands.command(name = 'update', help = 'Downloads any new files from the google drive')
     async def update(self, ctx):
-        messageStart = "Searching the Google Drive\n-----------------------------------\n"
+        messageStart = "Searching the Google Drive .\n-----------------------------------\n"
         post = await ctx.send(messageStart)
 
         message = ''
         memeUpdate = await drive.update('./media/classicMemes/', "Classic Memes", messageStart, message, post);
-        messageStart = "Searching the Google Drive .\n-----------------------------------\n"
+        messageStart = "Searching the Google Drive ..\n-----------------------------------\n"
         if not (memeUpdate[:2] == 'No'):
             message = message + memeUpdate	
-            await post.edit(content = messageStart + message)
+        await post.edit(content = messageStart + message)
         
         
 
         catUpdate = await drive.update('./media/cats/', "Warrior Cats", messageStart, message, post);
-        messageStart = "Searching the Google Drive ..\n-----------------------------------\n"
+        messageStart = "Searching the Google Drive ...\n-----------------------------------\n"
         if not (catUpdate[:2] == 'No'):
             message = message + catUpdate	
-            await post.edit(content = messageStart + message)
+        await post.edit(content = messageStart + message)
 
 
         bulborbUpdate = await drive.update('./media/bulborb/', "Bulborbs", messageStart, message, post);
-        messageStart = "Searching the Google Drive ...\n-----------------------------------\n"
+        messageStart = "Searching the Google Drive ....\n-----------------------------------\n"
         if not (bulborbUpdate[:2] == 'No'):
             message = message + bulborbUpdate	
-            await post.edit(content = messageStart + message)
+        await post.edit(content = messageStart + message)
 
 
         knuckSum = int(await drive.update('./media/rateMeme/good/', "Good Rates", messageStart, message, post)); 
+        messageStart = "Searching the Google Drive .....\n-----------------------------------\n"
+        await post.edit(content = messageStart + message)
+
         knuckSum = knuckSum + int(await drive.update('./media/rateMeme/bad/', "Bad Rates", messageStart, message, post));
+        messageStart = "Searching the Google Drive ......\n-----------------------------------\n"
+        await post.edit(content = messageStart + message)
+
         knuckSum = knuckSum + int(await drive.update('./media/rateMeme/other/', "Other Rates", messageStart, message, post));
-        
-        messageStart = "Searching the Google Drive ....\n-----------------------------------\n"
+        messageStart = "Searching the Google Drive .......\n-----------------------------------\n"
+       
         if not (knuckSum == 0):
             message = message + "Added: Knuckles Memes: " + str(knuckSum) + "\n"
-            await post.edit(content = messageStart + message)
+        await post.edit(content = messageStart + message)
+
+
+        kcSum = int(await drive.update('./media/kekOrCringe/kek/', "Kek", messageStart, message, post));
+        messageStart = "Searching the Google Drive ........\n-----------------------------------\n"
+        await post.edit(content = messageStart + message)
+
+        kcSum = kcSum + int(await drive.update('./media/kekOrCringe/cringe/', "Cringe", messageStart, message, post));
+        messageStart = "Searching the Google Drive .........\n-----------------------------------\n"
+        if not (kcSum == 0):
+            message = message + "Added: Kek Or Cringe Memes: " + str(kcSum) + "\n"
+        await post.edit(content = messageStart + message)
 
         if message == '':
             message = 'No New Content Found'
+
 
         await post.edit(content = message)
 
@@ -332,18 +350,20 @@ class Misc(commands.Cog):
     async def patch(self, ctx):
         embed = discord.Embed(color= 0xeeeeee)
         
-        embed.add_field(name='Patch 2/3/21', value='-------------------------', inline=False)
+        embed.add_field(name='Patch 3/2/21', value='-------------------------', inline=False)
         
         embed.add_field(name='New Commands', value='------', inline=False)
-        embed.add_field(name='s!stat', value='Displays server and user statistics. Use s!stat for server stats, and s!stat @user for user statistics', inline=True)
-        
+        embed.add_field(name='s!kek', value='Posts a meme to congratulate another user\'s post. Contains search and list functionality', inline=True)
+        embed.add_field(name='s!cringe', value='Posts a meme to bad-mouth another user\'s post. Contains search and list functionality', inline=True)
+       
         embed.add_field(name='\u200b\nChanges to Existing Commands', value='------', inline=False)
-        embed.add_field(name='More Updating', value='s!update now updates Knuckles Rating Memes categorized into good, bad, and other', inline=False)
+        embed.add_field(name='Better Updating', value='s!update can now update kek and cringe. Now shows loading bars when downloading memes, and reduced text when no new memes found', inline=True)
+        embed.add_field(name='Updated Help', value='s!help now separates some commands on multiple pages, easier to read and fixes a bug where some commands were not shown', inline=True)
 
-        embed.add_field(name='\u200b\nNew Background Effects', value='------', inline=False)
-        embed.add_field(name='Knuckles RateMeme', value='Knuckles now has a 40% chance of giving you a good or positive result, 40% for bad or negative, and 20% for other. Hopefully you meme will get accepted.', inline=True)
+        #embed.add_field(name='\u200b\nNew Background Effects', value='------', inline=False)
+        #embed.add_field(name='Knuckles RateMeme', value='Knuckles now has a 40% chance of giving you a good or positive result, 40% for bad or negative, and 20% for other. Hopefully you meme will get accepted.', inline=True)
 
-        embed.add_field(name='\u200b\nOther', value='I honestly changed a lot more, but I forgot what it was over the course of like 2 weeks, so sorry', inline = False)
+        #embed.add_field(name='\u200b\nOther', value='I honestly changed a lot more, but I forgot what it was over the course of like 2 weeks, so sorry', inline = False)
 
         await ctx.send(embed=embed)
 

@@ -12,7 +12,7 @@ import pandas as pd
 class Stats(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-		self.userColumns = ['id', 'total', 'averagerate', 'sumrate', '7', 'bonk', 'bulborb', 'cancel', 'cat', 'coin', 'dailymeme', 'dark', 'goodnight', 'meme', 'patch', 'playing', 'playlist', 'playlistmeme', 'ratememe', 'ratepost', 'skip', 'song', 'songmeme', 'stat', 'stop', 'update', 'yes', 'fail']
+		self.userColumns = ['id', 'total', 'averagerate', 'sumrate', '7', 'bonk', 'bulborb', 'cancel', 'cat', 'coin', 'dailymeme', 'dark', 'goodnight', 'meme', 'patch', 'playing', 'playlist', 'playlistmeme', 'ratememe', 'ratepost', 'skip', 'song', 'songmeme', 'stat', 'stop', 'update', 'yes', 'fail', 'kek', 'cringe']
 		self.memeColumns = ['meme', 'count']
 		self.catColumns = ['cat', 'count']
 		self.bulborbColumns = ['bulborb', 'count']
