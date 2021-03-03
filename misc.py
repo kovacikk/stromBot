@@ -79,8 +79,9 @@ class Misc(commands.Cog):
     #Posts the Yes Gif
     @commands.command(name='yes', help='Steve Ballmer sweaty reaction')
     async def yes(self, ctx):
+       
         await ctx.send('https://tenor.com/view/steve-ballmer-yes-microsoft-gif-4349581')
-
+       
     #Posts a random Pikmin Meme
     @commands.command(name='bulborb', help='Posts a random bulborb')
     async def bulborb(self, ctx, *query):

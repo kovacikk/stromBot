@@ -108,10 +108,10 @@ async def time_check():
 
         #print(now, day)
         #Use a fixed date to find the Wednesday that shows up once every other week
-        if (now == bot.reginaldTime and mod == 12):
+        if (now == bot.reginaldTime and mod == 11):
             await message_channel.send(file=discord.File('./media/jpg/reginald.jpg'))
             time = 3600
-        elif (now == bot.reginaldTime and mod == 13):
+        elif (now == bot.reginaldTime and mod == 12):
             ran = random.choice(range(10))
             if ran == 0:
                 await message_channel.send(file=discord.File('./media/jpg/reginaldBread.jpg'))
@@ -131,7 +131,16 @@ async def time_check():
             bd = pandas.read_csv('./stat/birthdays.csv')
             for index, row in bd.iterrows():
                 if (d == row['day'] and m == row['month']):
-                     await message_channel.send(row['name'] + "! Strombot thinks it is your birthday and wishes you a happy birthday!!! Everyone wish, " + row['name'] + " a happy birthday!!!")
+
+                     firstName = row['name'].split()[0]
+                     lastName = row['name'].split()[1]
+
+                     embed = discord.Embed(color = 0xeeeeee, title='Happy Birthday' + '!', url='https://itsyourbirthday.today/#' + firstName + '%20' + lastName)
+                     embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/387360051482066944/813515560955674664/cake.jpg')
+                     embed.add_field(name='Happy Birthday', value="! Strombot thinks it is your birthday and wishes you a happy birthday!!! Everyone wish, " + row['name'] + " a happy birthday!!!", inline=False) 
+                     message = await ctx.send(embed = embed)
+                     await message.add_reaction('🎂')
+                     await message.add_reaction('🍨')
 
         await asyncio.sleep(time)
 
@@ -290,7 +299,7 @@ async def help(ctx):
 	embed.add_field(name='stat', value="Displays statistics, works with s!stat @user too!", inline = True)
 	embed.add_field(name='update', value='Checks the Google Drive for new memes and downloads them', inline=True)
 	embed.add_field(name='yes', value='Posts Steve Ballmer funny sweat yes video', inline=True)	
-		
+	#embed.add_field(name='test', value="this is kinda weird [test](www.google.com)", inline=True)	
 	await ctx.send(embed=embed)
 
 #Run Bot
