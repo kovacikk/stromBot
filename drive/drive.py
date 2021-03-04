@@ -125,6 +125,13 @@ async def update(path, name, messageStart, message, post):
 
     first_added = ""
 
+    if (count > 0):
+        bar = '|'
+        for square in range(20):
+            bar = bar + '□'
+        bar = bar + '|\n'
+        await post.edit(content = messageStart + bar + '-----------------------------------\n' + message)
+
     for meme in difference:
         #if yes == 2:
         #    break
