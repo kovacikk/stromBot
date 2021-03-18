@@ -127,6 +127,7 @@ async def time_check():
         d = datetime.date.today().day
         m = datetime.date.today().month
         #Check for Birthdays
+        #print(now);
         if (now == "12:00"):
             bd = pandas.read_csv('./stat/birthdays.csv')
             for index, row in bd.iterrows():
@@ -138,7 +139,7 @@ async def time_check():
                      embed = discord.Embed(color = 0xeeeeee, title='Happy Birthday' + '!', url='https://itsyourbirthday.today/#' + firstName + '%20' + lastName)
                      embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/387360051482066944/813515560955674664/cake.jpg')
                      embed.add_field(name='Happy Birthday', value="! Strombot thinks it is your birthday and wishes you a happy birthday!!! Everyone wish, " + row['name'] + " a happy birthday!!!", inline=False) 
-                     message = await ctx.send(embed = embed)
+                     message = await message_channel.send(embed = embed)
                      await message.add_reaction('🎂')
                      await message.add_reaction('🍨')
 
@@ -163,6 +164,23 @@ async def playingMessage(ctx):
 async def on_message(ctx):
 	if (ctx.author == bot.user):
 		return
+	
+	#If Shane, Convert Secret s!kek
+	if (ctx.content[:27] == 's!extremely_funny_and_based' or ctx.content[:27] == 'S!extremely_funny_and_based'):
+		if (ctx.author.id == 256169976379998209):
+			ctx.content = 's!kek'
+		else:
+			await ctx.channel.send('Sorry, only Shane gets based command privileges and you are NOT Shane')
+			return
+
+	#If Drew, Convert Secret s!meme walter white.gif
+	if (ctx.content[:24] == 's!waltar_my_good_husband' or ctx.content[:24] == 'S!waltar_my_good_husband'):
+		if (ctx.author.id == 159433180036726784):
+			ctx.content = 's!meme walter white.gif'
+		else:
+			await ctx.channel.send('Uh oh, this command is reserved for true waltar whit fans only')
+			return
+
 
 	user = ctx.author.id
 
