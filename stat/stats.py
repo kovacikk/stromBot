@@ -436,7 +436,7 @@ class Stats(commands.Cog):
 			
 	#Generate New User Row
 	def newUserRow(self, userId, command):
-		row = [[userId, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+		row = [[userId, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
 		for i in range(len(self.userColumns)):
 			if self.userColumns[i] == command:

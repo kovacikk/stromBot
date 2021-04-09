@@ -54,10 +54,8 @@ async def update(path, name, messageStart, message, post):
     service = get_gdrive_service()
 
     # Get Folder ID for Classic Memes folder
+    
     """
-    results = service.files().list(q='name="Kek"').execute().get('files', [])
-    for result in results:
-        print(result.get('id'))
     results = service.files().list(q='name="Cringe"').execute().get('files', [])
     for result in results:
         print(result.get('id'))      
@@ -76,6 +74,20 @@ async def update(path, name, messageStart, message, post):
             responses = service.files().list(q='"1FRGzx9qPRdFifo-jZliFz8gx-70qZZ_G" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
         elif (name == "Bulborbs"):
             responses = service.files().list(q='"1VjkqcKJFxvXQp1yLpqtiVpcYXfZIFSFS" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Monday"):
+            responses = service.files().list(q='"1u43el6Zmw0C5NUZK1ksZsuFgbh-cWiXn" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Tuesday"):
+            responses = service.files().list(q='"1qPsyDCivhan-vmeCFDcebetZOtmRDDF9" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Wednesday"):
+            responses = service.files().list(q='"1C-sLl2w9J7ksLfJejaOLq7Rin5Z71G24" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Thursday"):
+            responses = service.files().list(q='"1HEkyDA70IhbzsUrJ8iYph2Ul3PzmJtap" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Friday"):
+            responses = service.files().list(q='"12sP4FAsAiE9buOnGh-WNj8i3ez-SNPrB" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Saturday"):
+            responses = service.files().list(q='"138UPINlkw6xUeutM5VaPGW_SFUSUYFmf" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Sunday"):
+            responses = service.files().list(q='"1CXbnuzCih0t9izvNr8M5iju9CXQZ87ri" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
         elif (name == "Good Rates"):
             responses = service.files().list(q='"1HdvYwYDiwmQb_IZNRh8QV6n7IYyC0a6-" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute() 
         elif (name == "Bad Rates"):
@@ -87,7 +99,7 @@ async def update(path, name, messageStart, message, post):
         elif (name == "Cringe"):
             responses = service.files().list(q='"1K8o0r-LtNTt0A-zIZh_juqmMUVjNLZ64" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
         else:
-            return
+            return 0
 
         for response in responses.get('files', []):
             counter = counter + 1
@@ -178,7 +190,7 @@ async def update(path, name, messageStart, message, post):
     else:
         message = "Added: " + name + ": " + str(yes) + "\n-------- including: " + first_added + "\n"
 
-    if name == "Good Rates" or name == "Bad Rates" or name == "Other Rates" or name == "Kek" or name == "Cringe":
+    if name == "Good Rates" or name == "Bad Rates" or name == "Other Rates" or name == "Kek" or name == "Cringe" or name == "Monday" or name == "Tuesday" or name == "Wednesday" or name == "Thursday" or name == "Friday" or name == "Saturday" or name == "Sunday":
         message = str(yes)
 
     return message

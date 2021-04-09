@@ -119,7 +119,7 @@ class EverydayClassics(commands.Cog):
 
     #Posts the appropriate meme for the day
     @commands.command(name='dailyMeme', help='Posts the appropriate meme for the day')
-    async def dailyMeme(self, ctx):
+    async def dailyMeme(self, ctx, *query):
         day = datetime.date.today().weekday()
         dayMeme = ""
 
@@ -144,22 +144,54 @@ class EverydayClassics(commands.Cog):
             message = await ctx.send("Uploading ...")
  
             try:
-                await(ctx.send(file=discord.File("./media/dayMemes/wednesday/always.mp4")))
+                await(ctx.send(file=discord.File("./media/dayMemes/wednesday/always_wednesday.mp4")))
                 await message.delete()
             except:
                 await ctx.send(memeName + ': file is too big')
                 await message.delete()
         else:
-            message = await ctx.send("Uploading ...")
- 
-            try:
-                await ctx.send(file=discord.File(dayMeme + random.choice(os.listdir(dayMeme)))) 
-                await message.delete()
-            except:
-                await ctx.send(memeName + ': file is too big')
-                await message.delete()
+            # No Query, Select a Random Day Meme
+            if (len(query)  == 0):
+                dayMemeName = random.choice(os.listdir(dayMeme))
+                randomDayMeme = dayMeme + dayMemeName
+                
+                message = await ctx.send("Uploading ...")
 
+                try:
+                    await ctx.send(file=discord.File(randomDayMeme))
+                    await message.delete()
+                except:
+                    await ctx.send(dayMemeName + ': file is too big')
+                    await message.delete()
+            # Query, Select a Random Day Meme Following Query
+            else:
+                matching = os.listdir(dayMeme)
+                
+                listBool = False
+                for arg in query:
+                    if (arg == '-l'):
+                        listBool = True
+                    else:
+                        matching = [s for s in matching if arg.upper() in s.upper()]
 
+                if (len(matching) == 0):
+                    await ctx.send('No results found')
+                else:
+                    if (not listBool):
+                        dayMemeName = random.choice(matching)
+                        randomDayMeme = dayMeme + dayMemeName
+                
+                        message = await ctx.send("Uploading ...")
+    
+                        try:
+                            await ctx.send(file=discord.File(randomDayMeme))
+                            await message.delete()
+                        except:
+                            await ctx.send(dayMemeName + ': file is too big')
+                            await message.delete()
+
+                    else:
+                        await reactList(ctx, self.bot, query, matching)
 
 
 

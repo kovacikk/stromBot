@@ -68,7 +68,10 @@ bot.ballmerTime = bot.acridTime
 async def on_ready():
     print(bot.user.name + ' has connected to Discord!')
 
-
+#April Fools Bool
+isFools = False
+foolDay = 0
+foolMonth = 0
 
 #Default if no command is found
 @bot.event
@@ -119,13 +122,37 @@ async def time_check():
         #Mr Crab Friday at 5
         elif (now == "17:00" and day == 4):
             #print('crab')
-            await message_channel.send("You guys made it to Friday, this ones on me:")
-            await message_channel.send(file=discord.File('./media/jpg/crab_friday.mp4'))
+            await message_channel.send("You guys survived to the weekend! Here's a random meme to celebrate:")
+
+            memeName = random.choice(os.listdir('./media/classicMemes/'))
+            randomMeme = './media/classicMemes/' + memeName
+            
+            message = await message_channel.send("Uploading ...")
+
+            try:
+                #discord.File(randomMeme)
+                await message_channel.send(file=discord.File(randomMeme))
+                await message.delete()
+            except:
+                await message_channel.send(memeName + ': file is too big')
+                await message.delete()
+
         else:
             time = 50
 
         d = datetime.date.today().day
+        foolDay = d
         m = datetime.date.today().month
+        foolMonth = m
+
+
+        #Check for April Fools
+        if (m == 4 and d == 1):
+            isFools = True
+        else:
+            isFools = False
+
+
         #Check for Birthdays
         #print(now);
         if (now == "12:00"):
@@ -165,6 +192,30 @@ async def on_message(ctx):
 	if (ctx.author == bot.user):
 		return
 	
+	#April Fools Message
+	ran = random.choice(range(25))
+	d = datetime.date.today().day
+	m = datetime.date.today().month
+
+	if ((ctx.content[:2] == 's!' or ctx.content[:2] == 'S!') and d == 1 and m == 4) and (ran < 5): #20% chance
+		message = ''
+		if ran == 0:
+			message = 'No'
+		elif ran == 1:
+			await ctx.channel.send('https://tenor.com/view/sponge-bob-square-pants-idont-really-feel-like-it-sleeping-sleep-no-thanks-gif-5384362')
+			return
+		elif ran == 2:
+			message = "..."
+		elif ran == 3:
+			message = "Sorry, I'm too busy reading Frog and Toad Are Friends by Arnold Lobel"
+		elif ran == 4:
+			await ctx.channel.send('https://tenor.com/view/no-idont-think-iwill-captain-america-old-capt-gif-17162888')
+			return
+		
+		await ctx.channel.send(message)
+		return
+
+
 	#If Shane, Convert Secret s!kek
 	if (ctx.content[:27] == 's!extremely_funny_and_based' or ctx.content[:27] == 'S!extremely_funny_and_based'):
 		if (ctx.author.id == 256169976379998209):
@@ -235,11 +286,11 @@ async def on_message(ctx):
 
 		#Set the time last ballmer was posted
 		bot.ballmerTime = datetime.datetime.now()
-		await ctx.channel.send('https://tenor.com/view/steve-ballmer-yes-microsoft-gif-4349581');
+		await ctx.channel.send('https://tenor.com/view/steve-ballmer-yes-microsoft-gif-4349581')
 
 
 	#Go to Other Commands
-	await bot.process_commands(ctx);
+	await bot.process_commands(ctx)
 
 
 #Checks enough time has passed to post Acrid
