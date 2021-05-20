@@ -410,15 +410,16 @@ class Stats(commands.Cog):
 	
 	#Updates User and Total Commands Data
 	def commandUpdate(self, userId, command):
+		print(command)
 		df = pd.read_csv('./stat/userData.csv')
 		user = df[df['id'].isin([userId])]
 
+		result = 'fail'
 		for col in df.columns:
-			if col == 'fail':
-				command = 'fail'
-			elif col == command:
-				break
+			if col == command:
+				result = command
 					
+		command = result
 
 		if user.empty:
 			data = self.newUserRow(userId, command)

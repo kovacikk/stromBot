@@ -129,6 +129,7 @@ async def time_check():
             
             message = await message_channel.send("Uploading ...")
 
+            time = 70
             try:
                 #discord.File(randomMeme)
                 await message_channel.send(file=discord.File(randomMeme))
