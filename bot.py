@@ -23,7 +23,6 @@ sys.path.insert(1, './drive/')
 sys.path.insert(1, './stat/')
 
 #Import Other Files
-import music
 import classics
 import misc
 import drive
@@ -355,7 +354,6 @@ def getBryceTime():
 
 
 #Add commands from other files
-bot.add_cog(music.Music(bot))
 bot.add_cog(classics.EverydayClassics(bot))
 bot.add_cog(misc.Misc(bot))
 bot.add_cog(stats.Stats(bot))
