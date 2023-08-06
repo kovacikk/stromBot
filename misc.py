@@ -371,6 +371,18 @@ class Misc(commands.Cog):
             message = message + "Added: Kek Or Cringe Memes: " + str(kcSum) + "\n"
         await post.edit(content = messageStart + message)
 
+        weevilSum = int(await drive.update('./media/weevil/wednesday/', "Weevil Wednesday", messageStart, message, post));
+        messageStart = "Searching the Google Drive ***..\n-----------------------------------\n"
+        if not (weevilSum == 0):
+            message = message + "Added: Weevil Wednesday Memes: " + str(weevilSum) + "\n"
+        await post.edit(content = messageStart + message)
+
+        weevilSpecialSum = int(await drive.update('./media/weevil/special/', "Special Days", messageStart, message, post));
+        messageStart = "Searching the Google Drive ***...\n-----------------------------------\n"
+        if not (weevilSpecialSum == 0):
+            message = message + "Added: Weevil Special Memes: " + str(weevilSpecialSum) + "\n"
+        
+
         if message == '':
             message = 'No New Content Found'
 

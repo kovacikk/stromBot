@@ -54,13 +54,15 @@ async def update(path, name, messageStart, message, post):
     service = get_gdrive_service()
 
     # Get Folder ID for Classic Memes folder
-    
-    """
-    results = service.files().list(q='name="Cringe"').execute().get('files', [])
-    for result in results:
-        print(result.get('id'))      
-    """ 
 
+    """
+    results = service.files().list(q='name="Wednesday"').execute().get('files', [])
+    for result in results:
+        print(result.get('id'))
+    results = service.files().list(q='name="Special Days"').execute().get('files', [])
+    for result in results:
+        print(result.get('id'))
+    """
     driveMeme = []
     driveDict = {} 
 
@@ -98,6 +100,10 @@ async def update(path, name, messageStart, message, post):
             responses = service.files().list(q='"1KDflBiAeRAlMS6wM3-8vDbp0XSBMdwee" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
         elif (name == "Cringe"):
             responses = service.files().list(q='"1K8o0r-LtNTt0A-zIZh_juqmMUVjNLZ64" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Weevil Wednesday"):
+            responses = service.files().list(q='"10XBssWiOGSzo5OHNRoENnv9XX944xTH-" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
+        elif (name == "Special Days"):
+            responses = service.files().list(q='"1DYOfXc7GL1jjmDzmc88EiTBlI0TqNVgX" in parents', fields='nextPageToken, files(id, name)', pageToken=page_token).execute()
         else:
             return 0
 
@@ -190,7 +196,7 @@ async def update(path, name, messageStart, message, post):
     else:
         message = "Added: " + name + ": " + str(yes) + "\n-------- including: " + first_added + "\n"
 
-    if name == "Good Rates" or name == "Bad Rates" or name == "Other Rates" or name == "Kek" or name == "Cringe" or name == "Monday" or name == "Tuesday" or name == "Wednesday" or name == "Thursday" or name == "Friday" or name == "Saturday" or name == "Sunday":
+    if name == "Good Rates" or name == "Bad Rates" or name == "Other Rates" or name == "Kek" or name == "Cringe" or name == "Monday" or name == "Tuesday" or name == "Wednesday" or name == "Thursday" or name == "Friday" or name == "Saturday" or name == "Sunday" or name == "Weevil Wednesday" or name == "Special Days":
         message = str(yes)
 
     return message
