@@ -26,6 +26,7 @@ sys.path.insert(1, './stat/')
 import classics
 import misc
 import stats
+import timeCheck
 
 #Intents for Discord Permissions
 intents = discord.Intents.default()
@@ -50,7 +51,6 @@ bot.generalId = 159415088824975360 #387360051482066944
 bot.acridTime = datetime.datetime.now() - timedelta(minutes=5);
 bot.bryceTime = bot.acridTime
 bot.ballmerTime = bot.acridTime
-
 
 #Prints When Bot has Connected
 @bot.event
@@ -87,116 +87,6 @@ async def on_command_error(ctx, error):
     General Helper Functions
 
 """
-
-#Used for Checking the Time for Reginald
-async def time_check():
-    await bot.wait_until_ready()
-    message_channel=bot.get_channel(bot.generalId)
-    while True:
-        day = datetime.date.today().weekday()
-        now = datetime.datetime.strftime(datetime.datetime.now(), '%H:%M')
-
-        #now = "12:00"
-
-        delta = (datetime.date.today() - bot.fixedDate)
-        mod = delta.days % 14
-
-        print(now, day)
-        #Use a fixed date to find the Wednesday that shows up once every other week
-        if (now == bot.reginaldTime and mod == 11):
-            await message_channel.send(file=discord.File('./media/jpg/reginald.jpg'))
-            time = 3600
-        elif (now == bot.reginaldTime and mod == 12):
-            ran = random.choice(range(10))
-            if ran == 0:
-                await message_channel.send(file=discord.File('./media/jpg/reginaldBread.jpg'))
-            time = 3600    
-        #Mr Crab Friday at 5
-        elif (now == "17:00" and day == 4):
-            #print('crab')
-            await message_channel.send("You guys survived to the weekend! Here's a random meme to celebrate:")
-
-            memeName = random.choice(os.listdir('./media/classicMemes/'))
-            randomMeme = './media/classicMemes/' + memeName
-            
-            message = await message_channel.send("Uploading ...")
-
-            time = 70
-            try:
-                #discord.File(randomMeme)
-                await message_channel.send(file=discord.File(randomMeme))
-                await message.delete()
-            except:
-                await message_channel.send(memeName + ': file is too big')
-                await message.delete()
-        #Weevil Wednesday at 4 am
-        elif (now == "04:00" and day == 2):
-            
-            #Christmas
-            if (datetime.datetime.now().month == 12 and datetime.datetime.now().day <= 25 and datetime.datetime.now().day > 18):
-                time = 70
-                await message_channel.send(file=discord.File('./media/weevil/special/weevil_wednesday_christmas.png'))
-            #Default
-            else:
-                weevilName = random.choice(os.listdir('./media/weevil/wednesday/'))
-                randomWeevil = './media/weevil/wednesday/' + weevilName
-
-                time = 70
-                await message_channel.send(file=discord.File(randomWeevil))
-	
-        #Christmas
-        elif (now == "12:00" and datetime.datetime.now().month == 12 and datetime.datetime.now().day == 25):
-            await message_channel.send("Merry Christmas!")
-            time = 70
-            await message_channel.send(file=discord.File('./media/mp4/catmas.mp4'))
-
-        #April 30th?!
-        elif (now == "12:00" and datetime.datetime.now().month == 4 and datetime.datetime.now().day == 30):
-            time = 70
-            await message_channel.send(file=discord.File('./media/mp4/4_30th.mp4'))
-
-        else:
-            time = 50
-
-        d = datetime.date.today().day
-        foolDay = d
-        m = datetime.date.today().month
-        foolMonth = m
-
-
-        #Check for April Fools
-        if (m == 4 and d == 1):
-            isFools = True
-        else:
-            isFools = False
-
-
-        #Check for Birthdays
-        if (now == "12:00"):
-            bd = pandas.read_csv('./stat/birthdays.csv')
-            for index, row in bd.iterrows():
-                #print(row['day'], row['month'])
-                if (d == row['day'] and m == row['month']):
-
-                     if (' ' in row['name']):
-                         firstName = row['name'].split()[0]
-                         lastName = row['name'].split()[1]
-                     else:
-                         firstName = row['name']
-                         lastName = '';
-
-                     embed = discord.Embed(color = 0xeeeeee, title='Happy Birthday' + '!', url='https://itsyourbirthday.today/#' + firstName + '%20' + lastName)
-                     embed.set_thumbnail(url='https://cdn.discordapp.com/attachments/387360051482066944/813515560955674664/cake.jpg')
-                     embed.add_field(name='Happy Birthday', value="! Strombot thinks it is your birthday and wishes you a happy birthday!!! Everyone wish, " + row['name'] + " a happy birthday!!!", inline=False) 
-                     message = await message_channel.send(embed = embed)
-                     await message.add_reaction('🎂')
-                     await message.add_reaction('🍨')
-
-                     if (firstName == 'Drew' and lastName == 'Crawford'):
-                         await message_channel.send(file=discord.File('./media/gif/rats-warning.gif'))
-        await asyncio.sleep(time)
-
-
 #Sends a message if someone tries to play something while it is already playing
 async def playingMessage(ctx):
         response = ""
@@ -346,8 +236,9 @@ def getBryceTime():
 bot.add_cog(classics.EverydayClassics(bot))
 bot.add_cog(misc.Misc(bot))
 bot.add_cog(stats.Stats(bot))
+bot.add_cog(timeCheck.timeCheck(bot))
 
-bot.loop.create_task(time_check())
+
 
 bot.remove_command("help")
 
