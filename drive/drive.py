@@ -55,14 +55,6 @@ async def update(path, name, messageStart, message, post):
 
     # Get Folder ID for Classic Memes folder
 
-    """
-    results = service.files().list(q='name="Wednesday"').execute().get('files', [])
-    for result in results:
-        print(result.get('id'))
-    results = service.files().list(q='name="Special Days"').execute().get('files', [])
-    for result in results:
-        print(result.get('id'))
-    """
     driveMeme = []
     driveDict = {} 
 

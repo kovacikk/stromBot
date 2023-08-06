@@ -25,17 +25,7 @@ sys.path.insert(1, './stat/')
 #Import Other Files
 import classics
 import misc
-import drive
 import stats
-import utils
-
-#Encoding for Playing Music
-#import ctypes
-#import ctypes.util
-#opusLocation = ctypes.util.find_library('opus')
-#a = discord.opus.load_opus(opusLocation)
-
-
 
 #Intents for Discord Permissions
 intents = discord.Intents.default()
@@ -182,7 +172,6 @@ async def time_check():
 
 
         #Check for Birthdays
-        #print(now);
         if (now == "12:00"):
             bd = pandas.read_csv('./stat/birthdays.csv')
             for index, row in bd.iterrows():
@@ -400,18 +389,6 @@ async def help(ctx):
 	embed.add_field(name='stat', value="Displays statistics, works with s!stat @user too!", inline = True)
 	embed.add_field(name='patch', value='Explains what new features were added in the last update', inline=True)
 	embed.add_field(name='update', value='Checks the Google Drive for new memes and downloads them', inline=True)
-
-
-	musicEmbed = discord.Embed(color = 0xeeeeee)
-	musicEmbed.add_field(name='Music', value='--------------------', inline=False);
-	
-	musicEmbed.add_field(name='song', value='Play a random song from the playlist without memes', inline=True)
-	musicEmbed.add_field(name='songMeme', value='Play a random song from the playlist with memes', inline=True)
-	musicEmbed.add_field(name='playlist', value='Shuffles songs from the playlist without memes', inline=True)	
-	musicEmbed.add_field(name='playlistMeme', value='Shuffles songs from the playlist with memes', inline=True)
-	musicEmbed.add_field(name='playing', value='Tells what song is currently playing', inline=True)
-	musicEmbed.add_field(name='skip', value='Skips currently playing song', inline=True)
-	musicEmbed.add_field(name='stop', value='Stops currently playing songs or clips' + '\n\u200b', inline=True)
 
 	message = await ctx.send(embed = embed)
 
